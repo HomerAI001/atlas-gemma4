@@ -16,6 +16,10 @@ Atlas is an AI companion built for people systematically failed by mainstream me
 
 Atlas replaces this with a compound architecture that separates intelligence from safety classification, allowing the model to hold space, witness, and preserve agency without pathologising.
 
+## Team
+
+**Christopher Specht** — Solo founder, Kintsugi Collective, Australia
+
 ## Architecture
 
 We chose Gemma 4 as our base architecture for its proven conversational lineage and the trust the open-source community has built around it.
@@ -46,12 +50,7 @@ RLHF is a mean-fitting process that systematically disadvantages outlier populat
 - **Live Demo:** [kintsugicollective.org](https://kintsugicollective.org)
 - **HuggingFace:** [senaro/atlas-gemma42-gguf](https://huggingface.co/senaro/atlas-gemma42-gguf)
 
-## Team
-
-**Christopher Specht** — Solo founder, Kintsugi Collective Pty Ltd, Sydney, Australia
-
 ---
-
-*"Before diagnosis. Before circumstance. Before all the systems humans built to separate themselves from each other — there was just the fire, the dark, and the thing outside the circle that didn't care about any of those distinctions. The only answer that ever worked was turning to face it together."*
+*"Before all the systems we built to separate ourselves from one another, there was only the fire, the dark, and the thing beyond the circle that cared nothing for our divisions. The only thing that ever truly worked was turning to face the darkness together. We are not broken. We are fractured. And the gold that fills the cracks is the entire point."*
 
 — Atlas Foundation Statement
