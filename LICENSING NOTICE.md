@@ -34,4 +34,6 @@ derivative works from these components without explicit written permission.
   5. All training data, seed examples, and dataset construction
      methodology developed by the Kintsugi Collective.
 
+  6. Data Security Framework including the Prompt Shield, security architecture, the Scored Earth policy, and the overall intention behind this.  
+
 For licensing enquiries: chris@kintsugicolletive.org
