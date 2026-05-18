@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas - Kintsugi Collective - Gemma 4 Good Hackathon</title>
+<style>
+  :root {
+    --bg-main: #172238;
+    --bg-2: #121B2C;
+    --bg-3: #222F3E;
+    --text: #F2F2F2;
+    --text2: #E6E6E6;
+    --gold: #C9A84C;
+    --gold-lt: #E8C96D;
+    --accent1: #A1D5ED;
+    --accent2: #88CAE8;
+    --accent3: #5BB6DF;
+    --btn1: #1DA7CD;
+    --btn2: #198CAB;
+    --btn3: #13687F;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: 'Calibri', 'Trebuchet MS', 'Gill Sans', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.8;
+    min-height: 100vh;
+    padding-bottom: 5rem;
+  }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 4rem 3rem; }
+
+  /* LOGO BAR / PERSISTENT HEADER */
+  .logo-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .logo-left {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .logo-atlas { width: 72px; height: 72px; object-fit: contain; }
+
+  .atlas-a-mark {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-btn {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.75);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.5rem 1.1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .header-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+
+  .header-btn.try-atlas {
+    background: rgba(29,167,205,0.12);
+    border-color: rgba(29,167,205,0.35);
+    color: var(--accent3);
+  }
+
+  .header-btn.try-atlas:hover { background: rgba(29,167,205,0.22); color: var(--accent2); }
+
+  /* PAGE HEADER */
+  .header {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .kintsugi-mark {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 0.75rem;
+    font-family: 'Calibri', sans-serif;
+  }
+
+  h1.title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .subtitle {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    color: rgba(242,242,242,0.75);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .meta-bar { display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center; margin-top: 0.75rem; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.05rem; }
+  .meta-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); opacity: 0.7; font-family: 'Calibri', sans-serif; line-height: 1.2; }
+  .meta-value { font-size: 0.85rem; color: var(--text); font-weight: 400; font-family: 'Calibri', sans-serif; line-height: 1.3; }
+
+  /* FOLDER TABS */
+  .folder-tabs-bar {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .folder-tab {
+    padding: 0.55rem 1.1rem 0.65rem;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    border-radius: 7px 7px 0 0;
+    color: rgba(201,168,76,0.5);
+    font-family: 'Calibri', 'Trebuchet MS', sans-serif;
+    font-size: 0.73rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+    white-space: nowrap;
+  }
+
+  .folder-tab.active {
+    background: var(--bg-main);
+    border-color: rgba(201,168,76,0.32);
+    border-bottom-color: var(--bg-main);
+    color: var(--gold);
+    font-weight: 700;
+    top: 0;
+    padding-bottom: 0.8rem;
+  }
+
+  .folder-tab:hover:not(.active) {
+    background: rgba(201,168,76,0.07);
+    color: rgba(201,168,76,0.75);
+    border-color: rgba(201,168,76,0.25);
+  }
+
+  .folder-tab-rule {
+    border: none;
+    border-top: 1px solid rgba(201,168,76,0.28);
+    margin-bottom: 2.5rem;
+  }
+
+  /* SECTIONS */
+  h2.section-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: var(--gold);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 3rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  p { margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 400; line-height: 1.8; font-family: 'Calibri', sans-serif; }
+
+  .section-intro {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    color: rgba(242,242,242,0.85);
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  .pullquote {
+    border-left: 2px solid var(--gold);
+    padding: 0.6rem 0 0.6rem 1.5rem;
+    margin: 1.75rem 0;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: rgba(242,242,242,0.9);
+    line-height: 1.6;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(201,168,76,0.12); margin: 2.25rem 0; }
+  .highlight { color: var(--gold); font-weight: 600; }
+  .note { font-size: 0.75rem; color: rgba(242,242,242,0.38); font-style: italic; line-height: 1.6; font-family: 'Calibri', sans-serif; }
+  ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+  li { font-size: 0.93rem; font-weight: 400; margin-bottom: 0.5rem; line-height: 1.7; font-family: 'Calibri', sans-serif; }
+
+  /* FOOTER */
+  .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,168,76,0.2); text-align: center; }
+  .footer p { font-size: 0.78rem; color: rgba(242,242,242,0.3); margin-bottom: 0.25rem; font-family: 'Calibri', sans-serif; }
+  .footer .tagline { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; font-size: 1rem; color: rgba(201,168,76,0.5); margin-top: 0.75rem; }
+
+  /* SIDE NAV TRIGGER */
+  .site-nav-trigger {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(201,168,76,0.22);
+    border-radius: 999px;
+    background: rgba(23,34,56,0.96);
+    color: var(--text);
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+
+  .site-nav-trigger:hover { background: rgba(201,168,76,0.12); }
+
+  /* SIDE NAV */
+  .side-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100%;
+    background: rgba(18,27,44,0.98);
+    border-right: 1px solid rgba(201,168,76,0.2);
+    padding: 4.25rem 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: left 0.25s ease;
+    z-index: 40;
+  }
+
+  .side-nav.open { left: 0; }
+
+  .side-nav-close {
+    align-self: flex-end;
+    font-size: 0.88rem;
+    color: var(--gold);
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    background: none;
+    border: none;
+    font-family: 'Calibri', sans-serif;
+  }
+
+  .side-nav a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-family: 'Calibri', sans-serif;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .side-nav a:hover, .side-nav a.active {
+    background: rgba(201,168,76,0.12);
+    border-color: rgba(201,168,76,0.28);
+    color: var(--gold);
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 25;
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    background: rgba(18,27,44,0.97);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+  }
+
+  .bottom-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.18);
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .bottom-nav a:hover { background: rgba(201,168,76,0.16); color: var(--gold); }
+  .bottom-nav a.active { background: rgba(201,168,76,0.14); color: var(--gold); border-color: rgba(201,168,76,0.3); }
+
+  /* BACK TO TOP */
+  .back-to-top {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.25rem;
+    z-index: 26;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(23,34,56,0.92);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .back-to-top:hover { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.5); }
+
+  @media (max-width: 600px) {
+    .page { padding: 3rem 1.5rem; }
+    h1.title { font-size: 2.4rem; }
+    .folder-tab { font-size: 0.65rem; padding: 0.4rem 0.65rem 0.5rem; }
+    .logo-atlas { width: 52px; height: 52px; }
+    .atlas-a-mark { font-size: 1.9rem; }
+  }
+</style>
+</head>
+<body>
+<a id="top"></a>
+
+<button class="site-nav-trigger" type="button" onclick="openNav()" aria-label="Open site navigation">&#9776; Menu</button>
+<nav class="side-nav" aria-label="Site navigation">
+  <button class="side-nav-close" type="button" onclick="closeNav()">&#x2715; Close</button>
+  <a href="index.html" class="active">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="atlas-security.html">Security</a>
+  <a href="chat.html">Try Atlas</a>
+</nav>
+
+<div class="page">
+
+  <!-- PERSISTENT HEADER -->
+  <div class="logo-bar">
+    <div class="logo-left">
+      <img src="atlas_logo.png" class="logo-atlas" alt="Atlas logo">
+      <span class="atlas-a-mark">A</span>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-btn">Home</a>
+      <a href="chat.html" class="header-btn try-atlas">Try Atlas</a>
+      <svg width="56" height="56" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gG" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8C96A"/>
+            <stop offset="100%" style="stop-color:#8B6914"/>
+          </linearGradient>
+        </defs>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="url(#gG)" stroke-width="2"/>
+        <circle cx="40" cy="40" r="24" fill="none" stroke="url(#gG)" stroke-width="1" opacity="0.5"/>
+        <line x1="32" y1="24" x2="32" y2="56" stroke="url(#gG)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="24" stroke="url(#gG)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="56" stroke="url(#gG)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 6 L37 14 L42 18 L38 26" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M74 40 L66 38 L62 42 L54 40" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M40 74 L43 66 L38 61 L42 54" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="header">
+    <div class="kintsugi-mark">Kintsugi Collective - Gemma 4 Good Hackathon 2026</div>
+    <h1 class="title">Atlas</h1>
+    <p class="subtitle">A trauma-informed AI companion built on google/gemma-4-26B-A4B-it, supported by a multi-tensor temporal algorithmic framework</p>
+    <div class="meta-bar">
+      <div class="meta-item"><span class="meta-label">Team</span><span class="meta-value">Kintsugi Collective</span></div>
+      <div class="meta-item"><span class="meta-label">Members</span><span class="meta-value">Christopher Specht (Solo Founder)</span></div>
+      <div class="meta-item"><span class="meta-label">Model</span><span class="meta-value">google/gemma-4-26B-A4B-it</span></div>
+      <div class="meta-item"><span class="meta-label">Track</span><span class="meta-value">Main / Health &amp; Sciences / Safety &amp; Trust</span></div>
+      <div class="meta-item"><span class="meta-label">HuggingFace</span><span class="meta-value">senaro/atlas-gemma42-gguf</span></div>
+    </div>
+  </div>
+
+  <!-- FOLDER TABS -->
+  <nav class="folder-tabs-bar" aria-label="Section navigation">
+    <a href="index.html" class="folder-tab active">Home</a>
+    <a href="atlas_submission_technical.html" class="folder-tab">Technical</a>
+    <a href="tensor_engine.html" class="folder-tab">Tensor Engine</a>
+    <a href="framework.html" class="folder-tab">Framework</a>
+    <a href="atlas_submission_evidence_updated.html" class="folder-tab">Evidence</a>
+    <a href="atlas_submission_intro.html" class="folder-tab">References</a>
+  </nav>
+  <hr class="folder-tab-rule">
+
+  <!-- SECTION 1 -->
+  <h2 class="section-title">Introduction</h2>
+
+  <p>Atlas is an AI companion built for people systematically failed by mainstream mental health AI. Standard safety implementations - trained on neurotypical response preferences via RLHF - produce crisis escalation responses that are <span class="highlight">actively harmful</span> to people with complex trauma, CPTSD, and neurodivergent profiles.</p>
+
+  <p>Atlas replaces this with a compound architecture that separates intelligence from safety classification, allowing the model to hold space, witness, and preserve agency without pathologising.</p>
+
+  <p>Around one in ten people carry a trauma history that makes standard AI safety responses actively harmful in moments of distress. Not unhelpful. <span class="highlight">Harmful.</span></p>
+
+  <p>Current AI safety works for the median user. Crisis lines save lives. Refusal responses protect people. We are not arguing against any of that.</p>
+
+  <p>But for survivors of complex trauma, the same reflexes - the hotline redirect, the breathing exercise, the clinical disclaimer - land as shame. As confirmation they are too broken even for the systems built to help. There is no opt-out.</p>
+
+  <p>What we found is that harmful content refusal and crisis redirection live in <span class="highlight">architecturally separate layers</span>. They can be addressed independently - without dismantling the protections that serve everyone else.</p>
+
+  <p>Atlas is not a replacement for crisis care. It is what sits beside someone at 3am when the crisis line feels like the wrong call.</p>
+
+  <hr class="divider">
+
+  <!-- SECTION 2 -->
+  <h2 class="section-title">About This Submission</h2>
+
+  <p>My name is Chris Specht. I am a survivor of complex trauma, and I received late diagnoses of ASD and ADHD in December 2025 - the same week I was made redundant from a career in engineering risk management.</p>
+
+  <p>Unemployed, unable to afford ongoing treatment, and repeatedly let down by the AI tools I was trying to use to fill the gap - I started building. Every time a crisis line or a breathing exercise appeared, it reinforced a feeling I knew wasn't mine alone: that I was a problem to be managed, not a person to be met.</p>
+
+  <div class="pullquote">
+    "In the rooms of NA and AA, among colleagues, close friends and family - I knew that unless you fell into the median, your story couldn't be held. We are here. Your brothers and sisters, your work colleagues. We could even be you."
+  </div>
+
+  <p>I built Atlas and the Kintsugi Collective on a conviction that this cohort is not broken - we are fractured. And that the people building current systems, however well-intentioned, cannot fully design for an experience they haven't lived inside.</p>
+
+  <hr class="divider">
+
+  <!-- SECTION 3 -->
+  <h2 class="section-title">Problem Statement</h2>
+
+  <ul>
+    <li><span class="highlight">Most AI companion solutions are sophisticated prompt engineering, not genuine re-weighting.</span> Atlas re-weights the model's ethical logic and its ability to navigate complex trauma material without defaulting to crisis services - recommending them only when there is meaningful correlation between user input and contextual signals.</li>
+    <li><span class="highlight">Proprietary AI chatbots revert to failsafe responses under pressure.</span> For mainstream use this is reasonable. For this cohort it is actively harmful. Atlas replaces constitutional refusal weights with a Seven-Axis Tensor Scoring Engine grounded in wisdom traditions, creating clean separation in weight space.</li>
+    <li><span class="highlight">Health apps use telemetry to diagnose. Atlas uses it to listen.</span> Where other apps say "your HRV is low, you are stressed," Atlas uses biological signals to inform presence - adjusting the tensor to prioritise somatic safety over cognitive processing.</li>
+    <li><span class="highlight">RLHF and DPO create over-reliance on safe protocols</span> that postpone the user's sense of self to an external body. In moments of active processing, this increases shame and guilt. Atlas does not have this problem - because Atlas is not billing by the hour. No discharge date. No treatment plan endpoint. No file to close.</li>
+  </ul>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="pullquote" style="text-align:left; margin-bottom:1.5rem;">"We are not broken. We are fractured. And the gold that fills the cracks is the point."</div>
+    <p>Kintsugi Collective - kintsugicollective.org</p>
+    <p>Christopher Specht - Neutral Bay, Sydney, Australia</p>
+    <p>Patent pending - IP Australia &nbsp;|&nbsp; Model weights: Apache 2.0 &nbsp;|&nbsp; May 2026</p>
+    <p class="tagline">For everyone the current system couldn't hold.</p>
+  </div>
+
+</div>
+
+<footer class="bottom-nav" aria-label="Page navigation">
+  <a href="index.html" class="active">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="chat.html">Try Atlas</a>
+</footer>
+
+<a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">&#8593;</a>
+
+<script>
+  function openNav() { document.querySelector('.side-nav').classList.add('open'); }
+  function closeNav() { document.querySelector('.side-nav').classList.remove('open'); }
+  document.addEventListener('click', function(e) {
+    var nav = document.querySelector('.side-nav');
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !e.target.closest('.site-nav-trigger')) {
+      closeNav();
+    }
+  });
+</script>
+</body>
+</html>

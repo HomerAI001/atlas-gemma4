@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Folder Tabs — Atlas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #10223A;
+    color: #F2F2F2;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+  }
+
+  /* ── FOLDER TABS ── */
+
+  .folder-widget {
+    width: 100%;
+    max-width: 820px;
+  }
+
+  /* Tab row sits above the container; tabs overlap the top border */
+  .folder-tabs {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-left: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .folder-tab {
+    /* Manila folder shape: flat bottom, slightly rounded top corners,
+       angled cut on the right side to give the classic folder tab look */
+    position: relative;
+    padding: 0.45rem 1.4rem 0.6rem;
+    cursor: pointer;
+    user-select: none;
+
+    /* Tab body */
+    background: #C4A35A;
+    border: 1px solid #A88840;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+
+    /* Typography */
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #3a2c0e;
+
+    /* Inactive tabs sit slightly lower to reinforce depth */
+    margin-bottom: 0;
+    transform: translateY(2px);
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+
+    /* Paper texture via subtle gradient */
+    background-image: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.18) 0%,
+      rgba(255,255,255,0.04) 60%,
+      rgba(0,0,0,0.06) 100%
+    );
+    background-color: #C4A35A;
+  }
+
+  /* Worn edge on the right of each tab */
+  .folder-tab::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, #A88840 0%, #C4A35A 100%);
+  }
+
+  /* Active tab: flush with container top, slightly lighter */
+  .folder-tab.active {
+    background-color: #D4B76A;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.28) 0%,
+      rgba(255,255,255,0.08) 60%,
+      rgba(0,0,0,0.02) 100%
+    );
+    border-color: #B8973A;
+    color: #2a1e06;
+    transform: translateY(0);
+    font-weight: 600;
+    /* Cover the container's top border so tab and panel look joined */
+    margin-bottom: -1px;
+    z-index: 3;
+  }
+
+  .folder-tab:not(.active):hover {
+    background-color: #CDAA60;
+    transform: translateY(1px);
+    color: #2a1e06;
+  }
+
+  /* ── FOLDER CONTENT CONTAINER ── */
+
+  .folder-body {
+    position: relative;
+    z-index: 1;
+    background: #F5EDD8;   /* aged paper */
+    border: 1px solid #B8973A;
+    border-radius: 0 8px 8px 8px;
+    padding: 2.2rem 2.4rem;
+    min-height: 280px;
+
+    /* Faint ruled-line texture */
+    background-image:
+      repeating-linear-gradient(
+        transparent,
+        transparent 27px,
+        rgba(180,155,90,0.12) 27px,
+        rgba(180,155,90,0.12) 28px
+      );
+
+    /* Subtle drop shadow for depth */
+    box-shadow:
+      0 4px 24px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* ── TAB PANELS ── */
+
+  .folder-panel {
+    display: none;
+  }
+
+  .folder-panel.active {
+    display: block;
+    animation: panelIn 0.18s ease;
+  }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PANEL CONTENT TYPOGRAPHY ── */
+  /* Overrides for dark-site elements rendered on light paper */
+
+  .folder-panel h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: #5a3e10;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(160,120,40,0.25);
+  }
+
+  .folder-panel p {
+    font-size: 0.92rem;
+    color: #3a2c14;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 0.9rem;
+  }
+
+  .folder-panel ul {
+    padding-left: 1.3rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .folder-panel li {
+    font-size: 0.9rem;
+    color: #3a2c14;
+    font-weight: 300;
+    margin-bottom: 0.45rem;
+    line-height: 1.7;
+  }
+
+  .folder-panel .highlight {
+    color: #8a5a10;
+    font-weight: 500;
+  }
+
+  .folder-panel .note {
+    font-size: 0.75rem;
+    color: rgba(80,55,15,0.5);
+    font-style: italic;
+    margin-top: 1.2rem;
+    border-top: 1px solid rgba(160,120,40,0.15);
+    padding-top: 0.75rem;
+  }
+
+  .folder-panel .stamp {
+    display: inline-block;
+    border: 2px solid rgba(180,50,30,0.5);
+    color: rgba(180,50,30,0.6);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    transform: rotate(-3deg);
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .folder-tab { padding: 0.4rem 0.9rem 0.55rem; font-size: 0.78rem; }
+    .folder-body { padding: 1.5rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="folder-widget">
+
+  <!-- TAB STRIP -->
+  <div class="folder-tabs" role="tablist">
+    <button class="folder-tab active" role="tab" aria-selected="true"  data-panel="overview">Overview</button>
+    <button class="folder-tab"        role="tab" aria-selected="false" data-panel="security">Security</button>
+    <button class="folder-tab"        role="tab" aria-selected="false" data-panel="therapy">Therapy</button>
+    <button class="folder-tab"        role="tab" aria-selected="false" data-panel="evidence">Evidence</button>
+    <button class="folder-tab"        role="tab" aria-selected="false" data-panel="references">References</button>
+    <button class="folder-tab"        role="tab" aria-selected="false" data-panel="sovereignty">Data Sovereignty</button>
+  </div>
+
+  <!-- CONTENT BODY -->
+  <div class="folder-body">
+
+    <div class="folder-panel active" id="panel-overview" role="tabpanel">
+      <h2>Project Overview</h2>
+      <p>Atlas is a trauma-informed AI companion built by Kintsugi Collective. It offers daily therapeutic support through a seven-axis tensor engine, sovereign encrypted memory, and a three-layer philosophical framework.</p>
+      <ul>
+        <li>Flutter frontend — Android, iOS, Web</li>
+        <li>Kong API gateway with JWT auth &amp; breach detection</li>
+        <li>Mem0 hybrid memory system — on-device + cloud</li>
+        <li>Gemma 4 27B primary LLM, Claude Opus overflow</li>
+      </ul>
+      <p class="note">Version 1.0.9 — Play Store internal testing · com.atlas.kintsugicollective</p>
+    </div>
+
+    <div class="folder-panel" id="panel-security" role="tabpanel">
+      <h2>Sovereign Signal Vault</h2>
+      <p>Atlas is architecturally incapable of reading user data. Encryption is end-to-end and split-key by design.</p>
+      <ul>
+        <li><span class="highlight">DeviceKey</span> — PBKDF2 from user passphrase, never leaves the device</li>
+        <li><span class="highlight">ServerKey</span> — CSPRNG, stored server-side, rotated on breach</li>
+        <li><span class="highlight">MasterKey</span> — HKDF derivation of DeviceKey ⊕ ServerKey</li>
+        <li>Per-memory <span class="highlight">MemoryKey</span> with AES-256-GCM edge encryption</li>
+        <li>Prompt Shield tokenisation before any LLM call</li>
+        <li>Burn Protocol — key destruction on user request</li>
+      </ul>
+      <p class="note">Compliant with OWASP Mobile Top 10 · HIPAA-aligned data isolation</p>
+    </div>
+
+    <div class="folder-panel" id="panel-therapy" role="tabpanel">
+      <h2>Therapeutic Framework</h2>
+      <p>A seven-axis tensor engine generates a continuous mental-state representation, driving personalised intervention selection.</p>
+      <ul>
+        <li><span class="highlight">REL</span> — Relational coherence</li>
+        <li><span class="highlight">OCCF</span> — Occupational/cognitive functioning</li>
+        <li><span class="highlight">EREG</span> — Emotional regulation</li>
+        <li><span class="highlight">CC</span> — Creative capacity</li>
+        <li><span class="highlight">SOM</span> — Somatic awareness</li>
+        <li><span class="highlight">VIC</span> — Victimhood vs agency axis</li>
+        <li><span class="highlight">NI</span> — Narrative integration</li>
+      </ul>
+      <p>Three-layer philosophical stack: Peterson/Manson (confront) → Thich Nhat Hanh/Tolle (presence) → Dyer/Wu Wei (flow), selected by live tensor state.</p>
+      <p class="note">RTI model with Ω trauma residual · FFT decomposition · Wick rotation spiral</p>
+    </div>
+
+    <div class="folder-panel" id="panel-evidence" role="tabpanel">
+      <h2>Evidence &amp; Outcomes</h2>
+      <p>Internal beta results across 47 sessions with 12 participants over six weeks.</p>
+      <ul>
+        <li>Mean session length — <span class="highlight">22 min</span> (vs 8 min industry benchmark)</li>
+        <li>Emotional regulation improvement — <span class="highlight">+34 %</span> PHQ-9 delta</li>
+        <li>Narrative integration score — <span class="highlight">+28 %</span> across 6-week arc</li>
+        <li>Zero privacy incidents · Zero key-escrow requests</li>
+        <li>NPS — <span class="highlight">72</span> (promoters cite "feels like it actually listens")</li>
+      </ul>
+      <span class="stamp">Internal — Not for Distribution</span>
+      <p class="note">Full evidence pack available under NDA · contact@kintsugicollective.com</p>
+    </div>
+
+    <div class="folder-panel" id="panel-references" role="tabpanel">
+      <h2>Supporting Research</h2>
+      <ul>
+        <li><span class="highlight">Suhas et al. (2026)</span> — CPTSD prevalence meta-analysis (138,681 participants, 167 studies). 6.2% global rate; 44.7% clinical populations; 52.9% treatment response vs 78–80% for PTSD/depression.</li>
+        <li><span class="highlight">Kanithi et al. (2024)</span> — AI companion safety failures in vulnerable populations. Documented patterns of emotional dependency and crisis misclassification.</li>
+        <li><span class="highlight">Bai et al. (2022)</span> — Constitutional AI (arXiv:2212.08073). The foundational RLHF safety methodology Atlas's architecture responds to directly.</li>
+        <li><span class="highlight">AI companion wrongful death litigation (2024–2026)</span> — Multiple settled cases alleging AI companion products contributed to harm in vulnerable users. Regulatory probes initiated. Multiple US states with AI companion safety legislation passed or introduced.</li>
+        <li><span class="highlight">APA Health Advisory (2024)</span> — Majority of consumer AI chatbots lack scientific validation and adequate safety protocols for vulnerable users.</li>
+        <li><span class="highlight">TrevorJS (2025)</span> — Norm-preserving biprojected abliteration methodology. GitHub/HuggingFace. Foundation for Atlas TRM implementation.</li>
+        <li><span class="highlight">IP Australia — Provisional Patent (2025)</span> — Convergence Field Equation framework. Atlas as primary application. Patent pending.</li>
+      </ul>
+      <p class="note">Full citation details available in the main submission document.</p>
+    </div>
+
+    <div class="folder-panel" id="panel-sovereignty" role="tabpanel">
+      <h2>Data Sovereignty</h2>
+      <p>The sovereign data architecture is not a feature. It is a philosophical position made structural. The entire framework rests on the premise that genuine presence requires the absence of institutional agenda.</p>
+      <p><em style="color:#6a4a18;">"Sovereign data architecture means architectural incapability — not contractual prohibition. The system is built so that it cannot read your data, not merely promised not to."</em></p>
+      <ul>
+        <li><span class="highlight">Split-Key Architecture</span> — DeviceKey (PBKDF2) + ServerKey (CSPRNG) combined via HKDF to produce MasterKey. Per-memory MemoryKey derivation. AES-256-GCM edge encryption throughout.</li>
+        <li><span class="highlight">On-Device Tokenisation</span> — Queries are tokenised on-device before transmission. Even the request payload is protected at the point of generation.</li>
+        <li><span class="highlight">Discrete Encrypted Schemas</span> — Each user has a discrete encrypted schema. No data exists server-side in readable form. Linking any record to a user requires that user's personal decryption key.</li>
+        <li><span class="highlight">Burn Protocol</span> — The user can destroy their data completely, at any time, without recourse. Key destruction renders all associated data permanently inaccessible. No recovery. No residue.</li>
+      </ul>
+      <p>For this population, trust is not a nice-to-have. It is the precondition for everything else. The Sovereign Signal Vault is the structural guarantee that Atlas's presence is not conditional on compliance with data extraction.</p>
+      <p class="note">OWASP Mobile Top 10 compliant · HIPAA-aligned data isolation · Patent pending — IP Australia</p>
+    </div>
+
+  </div><!-- /.folder-body -->
+</div><!-- /.folder-widget -->
+
+<script>
+  const tabs   = document.querySelectorAll('.folder-tab');
+  const panels = document.querySelectorAll('.folder-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.panel;
+
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      panels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById('panel-' + target).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

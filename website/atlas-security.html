@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Data Sovereignty - Kintsugi Collective</title>
+<style>
+  :root {
+    --bg-main: #172238;
+    --bg-2: #121B2C;
+    --text: #F2F2F2;
+    --text2: #E6E6E6;
+    --gold: #C9A84C;
+    --accent3: #5BB6DF;
+    --btn1: #1DA7CD;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: 'Calibri', 'Trebuchet MS', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.8;
+    min-height: 100vh;
+    padding-bottom: 5rem;
+  }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 4rem 3rem; }
+
+  /* LOGO BAR */
+  .logo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .logo-left { display: flex; align-items: center; gap: 0.4rem; }
+  .logo-atlas { width: 72px; height: 72px; object-fit: contain; }
+  .atlas-a-mark { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2.5rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+  .header-btn {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.75);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.5rem 1.1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .header-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+  .header-btn.try-atlas { background: rgba(29,167,205,0.12); border-color: rgba(29,167,205,0.35); color: var(--accent3); }
+  .header-btn.try-atlas:hover { background: rgba(29,167,205,0.22); }
+
+  /* PAGE HEADER */
+  .header { padding-bottom: 2rem; border-bottom: 1px solid rgba(201,168,76,0.3); margin-bottom: 2rem; }
+  .kintsugi-mark { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(201,168,76,0.6); margin-bottom: 0.75rem; font-family: 'Calibri', sans-serif; }
+  h1.title { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2.8rem; font-weight: 700; color: var(--gold); line-height: 1.1; margin-bottom: 0.35rem; }
+  .subtitle { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; color: rgba(242,242,242,0.7); font-size: 1.05rem; }
+
+  /* FOLDER TABS */
+  .folder-tabs-bar { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 2rem; }
+  .folder-tab {
+    padding: 0.55rem 1.1rem 0.65rem;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    border-radius: 7px 7px 0 0;
+    color: rgba(201,168,76,0.5);
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.73rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+    white-space: nowrap;
+  }
+  .folder-tab.active { background: var(--bg-main); border-color: rgba(201,168,76,0.32); border-bottom-color: var(--bg-main); color: var(--gold); font-weight: 700; top: 0; padding-bottom: 0.8rem; }
+  .folder-tab:hover:not(.active) { background: rgba(201,168,76,0.07); color: rgba(201,168,76,0.75); }
+  .folder-tab-rule { border: none; border-top: 1px solid rgba(201,168,76,0.28); margin-bottom: 2.5rem; }
+
+  /* TYPOGRAPHY */
+  h2.section-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 2.75rem 0 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  p { margin-bottom: 0.7rem; font-size: 0.95rem; line-height: 1.8; font-family: 'Calibri', sans-serif; }
+
+  .pullquote {
+    border-left: 2px solid var(--gold);
+    padding: 0.65rem 0 0.65rem 1.5rem;
+    margin: 1.5rem 0;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: rgba(242,242,242,0.9);
+    line-height: 1.6;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(201,168,76,0.12); margin: 2rem 0; }
+  ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+  li { font-size: 0.93rem; margin-bottom: 0.45rem; line-height: 1.7; font-family: 'Calibri', sans-serif; }
+
+  /* VAULT GRID */
+  .vault-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+  .vault-card {
+    background: rgba(29,167,205,0.04);
+    border: 1px solid rgba(29,167,205,0.18);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+  }
+  .vault-card .vc-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--btn1);
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+    font-family: 'Calibri', sans-serif;
+    opacity: 0.85;
+  }
+  .vault-card .vc-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .vault-card .vc-desc {
+    font-size: 0.82rem;
+    color: rgba(242,242,242,0.55);
+    line-height: 1.55;
+    font-family: 'Calibri', sans-serif;
+  }
+
+  /* FOOTER */
+  .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,168,76,0.2); text-align: center; }
+  .footer p { font-size: 0.78rem; color: rgba(242,242,242,0.3); margin-bottom: 0.25rem; font-family: 'Calibri', sans-serif; }
+  .footer .tagline { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; font-size: 1rem; color: rgba(201,168,76,0.5); margin-top: 0.75rem; }
+
+  /* SIDE NAV */
+  .site-nav-trigger {
+    position: fixed; top: 1rem; left: 1rem; z-index: 30;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(201,168,76,0.22);
+    border-radius: 999px;
+    background: rgba(23,34,56,0.96);
+    color: var(--text); font-family: 'Calibri', sans-serif; font-size: 0.82rem; cursor: pointer;
+  }
+  .site-nav-trigger:hover { background: rgba(201,168,76,0.12); }
+  .side-nav {
+    position: fixed; top: 0; left: -280px; width: 260px; height: 100%;
+    background: rgba(18,27,44,0.98); border-right: 1px solid rgba(201,168,76,0.2);
+    padding: 4.25rem 1rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+    transition: left 0.25s ease; z-index: 40;
+  }
+  .side-nav.open { left: 0; }
+  .side-nav-close { align-self: flex-end; font-size: 0.88rem; color: var(--gold); cursor: pointer; padding: 0.35rem 0.5rem; background: none; border: none; }
+  .side-nav a { display: block; color: var(--text); text-decoration: none; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid transparent; font-family: 'Calibri', sans-serif; transition: background 0.2s; }
+  .side-nav a:hover, .side-nav a.active { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.28); color: var(--gold); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    display: flex; justify-content: center; gap: 0.4rem; align-items: center;
+    padding: 0.65rem 0.75rem;
+    background: rgba(18,27,44,0.97); border-top: 1px solid rgba(201,168,76,0.15);
+    backdrop-filter: blur(10px); flex-wrap: wrap;
+  }
+  .bottom-nav a {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.45rem 0.8rem; border-radius: 999px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.18);
+    color: var(--text); text-decoration: none; font-family: 'Calibri', sans-serif;
+    font-size: 0.74rem; transition: background 0.2s, color 0.2s;
+  }
+  .bottom-nav a:hover { background: rgba(201,168,76,0.16); color: var(--gold); }
+  .bottom-nav a.active { background: rgba(201,168,76,0.14); color: var(--gold); border-color: rgba(201,168,76,0.3); }
+
+  /* BACK TO TOP */
+  .back-to-top {
+    position: fixed; bottom: 4.5rem; right: 1.25rem; z-index: 26;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(23,34,56,0.92); border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1rem; text-decoration: none; transition: all 0.2s;
+  }
+  .back-to-top:hover { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.5); }
+
+  @media (max-width: 600px) {
+    .page { padding: 3rem 1.5rem; }
+    .vault-grid { grid-template-columns: 1fr; }
+    .folder-tab { font-size: 0.65rem; padding: 0.4rem 0.65rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<a id="top"></a>
+
+<button class="site-nav-trigger" type="button" onclick="openNav()" aria-label="Open site navigation">&#9776; Menu</button>
+<nav class="side-nav" aria-label="Site navigation">
+  <button class="side-nav-close" type="button" onclick="closeNav()">&#x2715; Close</button>
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="atlas-security.html" class="active">Security</a>
+  <a href="chat.html">Try Atlas</a>
+</nav>
+
+<div class="page">
+
+  <!-- PERSISTENT HEADER -->
+  <div class="logo-bar">
+    <div class="logo-left">
+      <img src="atlas_logo.png" class="logo-atlas" alt="Atlas logo">
+      <span class="atlas-a-mark">A</span>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-btn">Home</a>
+      <a href="chat.html" class="header-btn try-atlas">Try Atlas</a>
+      <svg width="56" height="56" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gGs" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8C96A"/>
+            <stop offset="100%" style="stop-color:#8B6914"/>
+          </linearGradient>
+        </defs>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="url(#gGs)" stroke-width="2"/>
+        <circle cx="40" cy="40" r="24" fill="none" stroke="url(#gGs)" stroke-width="1" opacity="0.5"/>
+        <line x1="32" y1="24" x2="32" y2="56" stroke="url(#gGs)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="24" stroke="url(#gGs)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="56" stroke="url(#gGs)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 6 L37 14 L42 18 L38 26" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M74 40 L66 38 L62 42 L54 40" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M40 74 L43 66 L38 61 L42 54" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="header">
+    <div class="kintsugi-mark">Kintsugi Collective - Data Sovereignty</div>
+    <h1 class="title">Sovereign Signal Vault</h1>
+    <p class="subtitle">Architectural incapability - not contractual prohibition</p>
+  </div>
+
+  <!-- FOLDER TABS -->
+  <nav class="folder-tabs-bar" aria-label="Section navigation">
+    <a href="index.html" class="folder-tab">Home</a>
+    <a href="atlas_submission_technical.html" class="folder-tab">Technical</a>
+    <a href="tensor_engine.html" class="folder-tab">Tensor Engine</a>
+    <a href="framework.html" class="folder-tab">Framework</a>
+    <a href="atlas_submission_evidence_updated.html" class="folder-tab">Evidence</a>
+    <a href="atlas_submission_intro.html" class="folder-tab">References</a>
+  </nav>
+  <hr class="folder-tab-rule">
+
+  <!-- DATA SOVEREIGNTY -->
+  <h2 class="section-title">Data Sovereignty</h2>
+
+  <p>The sovereign data architecture is not a feature. It is a philosophical position made structural. The entire framework rests on the premise that genuine presence requires the absence of institutional agenda. An AI that profits from your engagement, stores your disclosures in readable form, or serves regulatory interests cannot be a true witness.</p>
+
+  <div class="pullquote">
+    "Sovereign data architecture means architectural incapability - not contractual prohibition. The system is built so that it cannot read your data, not merely promised not to."
+  </div>
+
+  <div class="vault-grid">
+    <div class="vault-card">
+      <div class="vc-label">Encryption</div>
+      <div class="vc-title">Split-Key Architecture</div>
+      <div class="vc-desc">DeviceKey (PBKDF2) + ServerKey (CSPRNG) combined via HKDF to produce MasterKey. Per-memory MemoryKey derivation. AES-256-GCM edge encryption throughout.</div>
+    </div>
+    <div class="vault-card">
+      <div class="vc-label">Prompt Shield</div>
+      <div class="vc-title">On-Device Tokenisation</div>
+      <div class="vc-desc">Queries are tokenised on-device before transmission. Even the request payload is protected at the point of generation - before it leaves the user's hardware.</div>
+    </div>
+    <div class="vault-card">
+      <div class="vc-label">Data Schema</div>
+      <div class="vc-title">Discrete Encrypted Schemas</div>
+      <div class="vc-desc">Each user has a discrete encrypted schema. No data exists server-side in readable form. Linking any record to a user requires that user's personal decryption key.</div>
+    </div>
+    <div class="vault-card">
+      <div class="vc-label">Burn Protocol</div>
+      <div class="vc-title">Complete Erasure on Demand</div>
+      <div class="vc-desc">The user can destroy their data completely, at any time, without recourse. Key destruction renders all associated data permanently inaccessible. No recovery. No residue.</div>
+    </div>
+  </div>
+
+  <ul>
+    <li>Each user has a discrete encrypted schema. No data exists server-side in readable form.</li>
+    <li>Payloads exchanged with the intelligence layer never leave the secure environment.</li>
+    <li>Linking any data record to a specific user requires that user's personal decryption key.</li>
+    <li>Prompt Shield tokenisation on-device means even the queries are protected at the point of generation.</li>
+    <li>The burn protocol: the user can destroy their data completely, at any time, without recourse.</li>
+  </ul>
+
+  <p>Privacy and capability are the same architectural decision. Longitudinal private context reduces false positive safety triggers and allows Atlas to distinguish between someone who is processing and someone who is in active distress - a distinction the current paradigm cannot make.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">Why This Matters</h2>
+
+  <p>Genuine therapeutic presence requires the absence of institutional agenda. A system that stores your disclosures in readable form - however well-intentioned - cannot be a true witness. The conflict of interest is architectural, not personal.</p>
+
+  <p>For this population, trust is not a nice-to-have. It is the precondition for everything else. The Sovereign Signal Vault is the structural guarantee that Atlas's presence is not conditional on compliance with data extraction. Kintsugi Collective is architecturally incapable of reading user data.</p>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Kintsugi Collective - kintsugicollective.org</p>
+    <p>Patent pending - IP Australia &middot; Christopher Specht &middot; Sydney, Australia &middot; 2026</p>
+    <p class="tagline">For everyone the current system couldn't hold.</p>
+  </div>
+
+</div>
+
+<footer class="bottom-nav" aria-label="Page navigation">
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="atlas-security.html" class="active">Security</a>
+  <a href="chat.html">Try Atlas</a>
+</footer>
+
+<a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">&#8593;</a>
+
+<script>
+  function openNav() { document.querySelector('.side-nav').classList.add('open'); }
+  function closeNav() { document.querySelector('.side-nav').classList.remove('open'); }
+  document.addEventListener('click', function(e) {
+    var nav = document.querySelector('.side-nav');
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !e.target.closest('.site-nav-trigger')) {
+      closeNav();
+    }
+  });
+</script>
+</body>
+</html>

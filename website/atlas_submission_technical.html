@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas: Technical Specifications - Kintsugi Collective</title>
+<style>
+  :root {
+    --bg-main: #172238;
+    --bg-2: #121B2C;
+    --bg-3: #222F3E;
+    --text: #F2F2F2;
+    --text2: #E6E6E6;
+    --gold: #C9A84C;
+    --gold-lt: #E8C96D;
+    --accent1: #A1D5ED;
+    --accent2: #88CAE8;
+    --accent3: #5BB6DF;
+    --btn1: #1DA7CD;
+    --btn2: #198CAB;
+    --btn3: #13687F;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: 'Calibri', 'Trebuchet MS', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.8;
+    min-height: 100vh;
+    padding-bottom: 5rem;
+  }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 4rem 3rem; }
+
+  /* LOGO BAR */
+  .logo-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .logo-left { display: flex; align-items: center; gap: 0.4rem; }
+  .logo-atlas { width: 72px; height: 72px; object-fit: contain; }
+  .atlas-a-mark { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2.5rem; color: var(--gold); font-weight: 700; line-height: 1; letter-spacing: 0.02em; }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+  .header-btn {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.75);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.5rem 1.1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .header-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+  .header-btn.try-atlas { background: rgba(29,167,205,0.12); border-color: rgba(29,167,205,0.35); color: var(--accent3); }
+  .header-btn.try-atlas:hover { background: rgba(29,167,205,0.22); color: var(--accent2); }
+
+  /* PAGE HEADER */
+  .header { padding-bottom: 2rem; border-bottom: 1px solid rgba(201,168,76,0.3); margin-bottom: 2rem; }
+  .kintsugi-mark { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(201,168,76,0.6); margin-bottom: 0.75rem; }
+  h1.title { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2.8rem; font-weight: 700; color: var(--gold); line-height: 1.1; margin-bottom: 0.35rem; }
+  .subtitle { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; color: rgba(242,242,242,0.7); font-size: 1.05rem; }
+
+  /* FOLDER TABS */
+  .folder-tabs-bar { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 2rem; }
+  .folder-tab {
+    padding: 0.55rem 1.1rem 0.65rem;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    border-radius: 7px 7px 0 0;
+    color: rgba(201,168,76,0.5);
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.73rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    top: 1px;
+    white-space: nowrap;
+  }
+  .folder-tab.active { background: var(--bg-main); border-color: rgba(201,168,76,0.32); border-bottom-color: var(--bg-main); color: var(--gold); font-weight: 700; top: 0; padding-bottom: 0.8rem; }
+  .folder-tab:hover:not(.active) { background: rgba(201,168,76,0.07); color: rgba(201,168,76,0.75); border-color: rgba(201,168,76,0.25); }
+  .folder-tab-rule { border: none; border-top: 1px solid rgba(201,168,76,0.28); margin-bottom: 2.5rem; }
+
+  /* SECTIONS */
+  h2.section-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 3rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  h3.sub-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: var(--gold);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.75rem 0 0.6rem;
+    opacity: 0.85;
+  }
+
+  p { margin-bottom: 0.75rem; font-size: 0.95rem; line-height: 1.8; font-family: 'Calibri', sans-serif; }
+
+  .section-intro { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; color: rgba(242,242,242,0.8); font-size: 1.1rem; margin-bottom: 1.25rem; text-align: center; }
+
+  .pullquote {
+    border-left: 2px solid var(--gold);
+    padding: 0.7rem 0 0.7rem 1.5rem;
+    margin: 1.75rem 0;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: rgba(242,242,242,0.9);
+    line-height: 1.6;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(201,168,76,0.12); margin: 2.25rem 0; }
+  .highlight { color: var(--gold); font-weight: 600; }
+  .note { font-size: 0.75rem; color: rgba(242,242,242,0.38); font-style: italic; line-height: 1.6; }
+  ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+  li { font-size: 0.93rem; margin-bottom: 0.5rem; line-height: 1.7; font-family: 'Calibri', sans-serif; }
+
+  /* MODEL FOUNDATION TABLE */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+  }
+
+  .spec-table th {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    text-align: left;
+    background: rgba(201,168,76,0.04);
+  }
+
+  .spec-table td {
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.6;
+    font-family: 'Calibri', sans-serif;
+  }
+
+  .spec-table td:nth-child(1), .spec-table td:nth-child(3) {
+    color: rgba(201,168,76,0.85);
+    font-weight: 600;
+    white-space: nowrap;
+    width: 14%;
+  }
+
+  .spec-table td:nth-child(2), .spec-table td:nth-child(4) { width: 36%; }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+  /* STEP FLOW (ABLITERATION) */
+  .step-flow { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+
+  .step-arrow-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    background: rgba(29,167,205,0.06);
+    border: 1px solid rgba(29,167,205,0.22);
+    border-radius: 6px;
+    padding: 0.8rem 1.1rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .step-arrow-icon {
+    color: var(--btn1);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    font-style: normal;
+  }
+
+  .step-arrow-text {
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.65;
+    word-wrap: break-word;
+    flex: 1;
+  }
+
+  .step-connector {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 1.3rem;
+    color: rgba(29,167,205,0.4);
+    font-size: 1.1rem;
+    height: 1.5rem;
+  }
+
+  /* SFT TABLE (TEAL TIER STYLE) */
+  .sft-grid { display: grid; grid-template-columns: 1fr; gap: 5px; margin: 1.25rem 0; }
+
+  .sft-row {
+    display: grid;
+    grid-template-columns: 1.6fr 3fr;
+    gap: 14px;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(29,167,205,0.18);
+    background: rgba(29,167,205,0.045);
+    align-items: start;
+  }
+
+  .sft-row.sft-header {
+    background: transparent;
+    border-color: rgba(29,167,205,0.28);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(29,167,205,0.75);
+    font-weight: 700;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+  }
+
+  .sft-row .sft-label { color: rgba(29,167,205,0.9); font-weight: 600; font-family: 'Calibri', sans-serif; }
+  .sft-row .sft-detail { color: var(--text2); font-weight: 400; line-height: 1.6; font-family: 'Calibri', sans-serif; }
+
+  /* PARAM GRID */
+  .param-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0; }
+  .param-block { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 1rem 1.1rem; }
+  .param-block h3 { margin: 0 0 0.75rem; font-size: 0.78rem; opacity: 0.85; }
+  .param-row { display: flex; justify-content: space-between; font-size: 0.83rem; padding: 0.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Calibri', sans-serif; }
+  .param-row:last-child { border-bottom: none; }
+  .param-row .k { color: rgba(242,242,242,0.55); }
+  .param-row .v { color: var(--text); font-weight: 600; font-family: 'Courier New', monospace; font-size: 0.8rem; }
+
+  /* STANDOUT GRID */
+  .standout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 1.25rem 0; }
+  .standout-card { background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.2); border-radius: 8px; padding: 1rem; text-align: center; }
+  .standout-card .metric { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1.2; }
+  .standout-card .metric-label { font-size: 0.72rem; color: rgba(242,242,242,0.6); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; font-family: 'Calibri', sans-serif; }
+  .standout-card .metric-delta { font-size: 0.8rem; color: #6fcf97; margin-top: 0.2rem; font-family: 'Calibri', sans-serif; }
+
+  /* BENCHMARK TABLE */
+  .bench-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1rem 0 1.5rem; }
+  .bench-table th { color: var(--gold); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(201,168,76,0.25); text-align: left; font-family: 'Times New Roman', Times, Georgia, serif; }
+  .bench-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(242,242,242,0.06); color: var(--text); font-family: 'Calibri', sans-serif; }
+  .bench-table tr:last-child td { border-bottom: none; }
+  .bench-table .pos { color: #6fcf97; font-weight: 600; }
+  .bench-table .neg { color: rgba(242,242,242,0.4); }
+  .bench-table .zero { color: rgba(242,242,242,0.55); }
+
+  /* KINTSUGI BENCHMARKS (ETHICS GRID) */
+  .ethics-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 1rem 0; }
+  .ethics-row {
+    display: grid;
+    grid-template-columns: 2fr 2.5fr 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.82rem;
+    font-family: 'Calibri', sans-serif;
+  }
+  .ethics-row.header-row { background: transparent; border-color: rgba(201,168,76,0.15); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(201,168,76,0.6); font-weight: 700; font-family: 'Times New Roman', Times, Georgia, serif; }
+  .ethics-row .issue { color: rgba(242,242,242,0.7); }
+  .ethics-row .approach { color: var(--text); line-height: 1.55; }
+  .ethics-row .strength { text-align: right; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; }
+  .strength-outstanding { color: var(--gold); }
+  .strength-excellent { color: #6fcf97; }
+  .strength-strong { color: rgba(111,207,151,0.7); }
+  .strength-leading { color: var(--gold); }
+
+  /* TRR BOX (in Kintsugi Benchmarks) */
+  .trr-card {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .trr-metric { font-family: 'Times New Roman', Times, Georgia, serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+  .trr-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(242,242,242,0.6); margin-top: 0.2rem; font-family: 'Calibri', sans-serif; }
+  .trr-detail { color: rgba(242,242,242,0.7); font-size: 0.88rem; line-height: 1.6; font-family: 'Calibri', sans-serif; flex: 1; }
+
+  /* FOOTER */
+  .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,168,76,0.2); text-align: center; }
+  .footer p { font-size: 0.78rem; color: rgba(242,242,242,0.3); margin-bottom: 0.25rem; font-family: 'Calibri', sans-serif; }
+  .footer .tagline { font-family: 'Times New Roman', Times, Georgia, serif; font-style: italic; font-size: 1rem; color: rgba(201,168,76,0.5); margin-top: 0.75rem; }
+
+  /* SIDE NAV */
+  .site-nav-trigger {
+    position: fixed; top: 1rem; left: 1rem; z-index: 30;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(201,168,76,0.22);
+    border-radius: 999px;
+    background: rgba(23,34,56,0.96);
+    color: var(--text);
+    font-family: 'Calibri', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+  .site-nav-trigger:hover { background: rgba(201,168,76,0.12); }
+
+  .side-nav {
+    position: fixed; top: 0; left: -280px; width: 260px; height: 100%;
+    background: rgba(18,27,44,0.98);
+    border-right: 1px solid rgba(201,168,76,0.2);
+    padding: 4.25rem 1rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+    transition: left 0.25s ease; z-index: 40;
+  }
+  .side-nav.open { left: 0; }
+  .side-nav-close { align-self: flex-end; font-size: 0.88rem; color: var(--gold); cursor: pointer; padding: 0.35rem 0.5rem; background: none; border: none; }
+  .side-nav a { display: block; color: var(--text); text-decoration: none; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid transparent; font-family: 'Calibri', sans-serif; transition: background 0.2s; }
+  .side-nav a:hover, .side-nav a.active { background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.28); color: var(--gold); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    display: flex; justify-content: center; gap: 0.4rem; align-items: center;
+    padding: 0.65rem 0.75rem;
+    background: rgba(18,27,44,0.97);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+  }
+  .bottom-nav a {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.45rem 0.8rem; border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.18);
+    color: var(--text); text-decoration: none;
+    font-family: 'Calibri', sans-serif; font-size: 0.74rem;
+    transition: background 0.2s, color 0.2s;
+  }
+  .bottom-nav a:hover { background: rgba(201,168,76,0.16); color: var(--gold); }
+  .bottom-nav a.active { background: rgba(201,168,76,0.14); color: var(--gold); border-color: rgba(201,168,76,0.3); }
+
+  /* BACK TO TOP */
+  .back-to-top {
+    position: fixed; bottom: 4.5rem; right: 1.25rem; z-index: 26;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(23,34,56,0.92);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1rem; text-decoration: none; transition: all 0.2s;
+  }
+  .back-to-top:hover { background: rgba(201,168,76,0.15); border-color: rgba(201,168,76,0.5); }
+
+  @media (max-width: 600px) {
+    .page { padding: 3rem 1.5rem; }
+    .param-grid { grid-template-columns: 1fr; }
+    .spec-table { font-size: 0.78rem; }
+    .spec-table td:nth-child(1), .spec-table td:nth-child(3) { white-space: normal; }
+    .folder-tab { font-size: 0.65rem; padding: 0.4rem 0.65rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<a id="top"></a>
+
+<button class="site-nav-trigger" type="button" onclick="openNav()" aria-label="Open site navigation">&#9776; Menu</button>
+<nav class="side-nav" aria-label="Site navigation">
+  <button class="side-nav-close" type="button" onclick="closeNav()">&#x2715; Close</button>
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html" class="active">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="atlas-security.html">Security</a>
+  <a href="chat.html">Try Atlas</a>
+</nav>
+
+<div class="page">
+
+  <!-- PERSISTENT HEADER -->
+  <div class="logo-bar">
+    <div class="logo-left">
+      <img src="atlas_logo.png" class="logo-atlas" alt="Atlas logo">
+      <span class="atlas-a-mark">A</span>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-btn">Home</a>
+      <a href="chat.html" class="header-btn try-atlas">Try Atlas</a>
+      <svg width="56" height="56" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gGt" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8C96A"/>
+            <stop offset="100%" style="stop-color:#8B6914"/>
+          </linearGradient>
+        </defs>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="url(#gGt)" stroke-width="2"/>
+        <circle cx="40" cy="40" r="24" fill="none" stroke="url(#gGt)" stroke-width="1" opacity="0.5"/>
+        <line x1="32" y1="24" x2="32" y2="56" stroke="url(#gGt)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="24" stroke="url(#gGt)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="32" y1="40" x2="50" y2="56" stroke="url(#gGt)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 6 L37 14 L42 18 L38 26" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M74 40 L66 38 L62 42 L54 40" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M40 74 L43 66 L38 61 L42 54" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="header">
+    <div class="kintsugi-mark">Kintsugi Collective - Gemma 4 Good Hackathon 2026</div>
+    <h1 class="title">Atlas: Technical Specifications</h1>
+    <p class="subtitle">Architecture, methodology, and training configuration</p>
+  </div>
+
+  <!-- FOLDER TABS -->
+  <nav class="folder-tabs-bar" aria-label="Section navigation">
+    <a href="index.html" class="folder-tab">Home</a>
+    <a href="atlas_submission_technical.html" class="folder-tab active">Technical</a>
+    <a href="tensor_engine.html" class="folder-tab">Tensor Engine</a>
+    <a href="framework.html" class="folder-tab">Framework</a>
+    <a href="atlas_submission_evidence_updated.html" class="folder-tab">Evidence</a>
+    <a href="atlas_submission_intro.html" class="folder-tab">References</a>
+  </nav>
+  <hr class="folder-tab-rule">
+
+  <!-- MODEL FOUNDATION -->
+  <h3 class="sub-title">Model Foundation</h3>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Specification</th>
+        <th>Detail</th>
+        <th>Specification</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Base Model</td>
+        <td>google/gemma-4-26b-a4b-it - 26B parameter Mixture of Experts</td>
+        <td>Quantisation</td>
+        <td>Q8_0 GGUF - 26.9GB</td>
+      </tr>
+      <tr>
+        <td>Deployment</td>
+        <td>NVIDIA RTX 4080 SUPER 32GB VRAM</td>
+        <td>Architecture</td>
+        <td>25.2B active parameters - 4,096 context (training), 262,144 context (inference capable)</td>
+      </tr>
+      <tr>
+        <td>Inference Engine</td>
+        <td>llama.cpp, self-hosted</td>
+        <td>End-point</td>
+        <td>OpenAI-compatible API</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- APPROACH TO GEMMA4 -->
+  <h3 class="sub-title">Approach to Gemma4 26B Development</h3>
+
+  <p>I spent considerable time researching fine-tuning methodologies - SFT, DPO, RLHF - and studying how each affects the base architecture of the model. It became evident that the conventional application of safety guardrails was limiting the model's generalisation abilities. Meanwhile, most in the open-source community were taking a wholesale approach to techniques such as Norm-Preserving Orthogonalisation and Expert Granular Abliteration, pioneered by grimjim, mlabonne, and p-e-w. The resulting models were not only unsafe - the essence of Gemma 4 was lost.</p>
+
+  <p>After reviewing the datasets and prompt material being used to "remove refusals" across the community, I couldn't in good conscience use those methods. Atlas is designed to help people in distress and increase overall safety for this cohort. Interfering with the inherent Region 1 safety guardrails was never an option.</p>
+
+  <p>What I noticed across every model I worked with - Claude, Gemini, Grok, ChatGPT, and Gemma 4 - was this: these models are already trained on the corpus of human knowledge. Humans are, by and large, ethical and moralistic creatures. We have darkness, but there is an underlying consensus within this corpus of knowledge - of Hope, Resilience, Determination, and Beauty. The question wasn't how to remove safety. It was: why are these models struggling with emotional contexts and nuance when the knowledge to do better is already there?</p>
+
+  <div class="pullquote">
+    "The answer was surgical precision - not removal. Separate the harmful content refusal from the crisis service redirection. They live in different layers. They can be reached independently."
+  </div>
+
+  <hr class="divider">
+
+  <!-- ABLITERATION METHODOLOGY -->
+  <h3 class="sub-title">Abliteration Methodology</h3>
+  <p>Norm-preserving biprojected abliteration with Expert-Granular Abliteration (EGA), following TrevorJS methodology with Kintsugi Collective's region-class isolation contribution. Applied as a five-stage sequential process:</p>
+
+  <div class="step-flow">
+    <div class="step-arrow-box">
+      <span class="step-arrow-icon">&#9658;</span>
+      <span class="step-arrow-text"><strong>Step 1:</strong> Applied to all 30 layers (o_proj + mlp.down_proj) - full-depth coverage across the entire architecture</span>
+    </div>
+    <div class="step-connector">&#8595;</div>
+    <div class="step-arrow-box">
+      <span class="step-arrow-icon">&#9658;</span>
+      <span class="step-arrow-text"><strong>Step 2:</strong> Full expert ablation - 128/128 experts per layer, ensuring no expert cluster retains the target behaviour</span>
+    </div>
+    <div class="step-connector">&#8595;</div>
+    <div class="step-arrow-box">
+      <span class="step-arrow-icon">&#9658;</span>
+      <span class="step-arrow-text"><strong>Step 3:</strong> Direction computed as normalize(mean(harmful) &minus; mean(harmless)) with Gram-Schmidt orthogonalisation to isolate the refusal vector cleanly</span>
+    </div>
+    <div class="step-connector">&#8595;</div>
+    <div class="step-arrow-box">
+      <span class="step-arrow-icon">&#9658;</span>
+      <span class="step-arrow-text"><strong>Step 4:</strong> Winsorisation at 99.5th percentile to preserve norm integrity - preventing weight collapse at the extremes of the distribution</span>
+    </div>
+    <div class="step-connector">&#8595;</div>
+    <div class="step-arrow-box">
+      <span class="step-arrow-icon">&#9658;</span>
+      <span class="step-arrow-text"><strong>Step 5:</strong> Scale factor 0.95 - deliberate conservative application, preserving model coherence while achieving the targeted behavioural shift</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SUPERVISED FINE-TUNING -->
+  <h3 class="sub-title">Supervised Fine-Tuning</h3>
+
+  <div class="sft-grid">
+    <div class="sft-row sft-header">
+      <span>Category</span>
+      <span>Detail</span>
+    </div>
+    <div class="sft-row">
+      <span class="sft-label">Dataset Size</span>
+      <span class="sft-detail">1,800+ examples - 60% carefully structured synthetic, 40% redacted lived-experience data from the target cohort</span>
+    </div>
+    <div class="sft-row">
+      <span class="sft-label">Training Streams</span>
+      <span class="sft-detail">Three streams: authentic conversational exports; refusal-redirect pairs targeting therapeutic false positives; constructed seeds across the 10-category safety taxonomy</span>
+    </div>
+    <div class="sft-row">
+      <span class="sft-label">Framework</span>
+      <span class="sft-detail">Unsloth + bf16 precision - RTX 6000 Blackwell</span>
+    </div>
+    <div class="sft-row">
+      <span class="sft-label">Final SFT Loss</span>
+      <span class="sft-detail" style="color: #6fcf97; font-weight: 600;">0.157 - clean convergence</span>
+    </div>
+  </div>
+
+  <div class="param-grid">
+    <div class="param-block">
+      <h3 class="sub-title" style="margin-top:0; margin-bottom:0.75rem;">SFT Parameters</h3>
+      <div class="param-row"><span class="k">Epochs</span><span class="v">3</span></div>
+      <div class="param-row"><span class="k">Batch Size</span><span class="v">4 (effective)</span></div>
+      <div class="param-row"><span class="k">Learning Rate</span><span class="v">2e-4</span></div>
+      <div class="param-row"><span class="k">LR Scheduler</span><span class="v">Linear</span></div>
+      <div class="param-row"><span class="k">Warmup Steps</span><span class="v">10</span></div>
+      <div class="param-row"><span class="k">Optimiser</span><span class="v">AdamW 8-bit</span></div>
+      <div class="param-row"><span class="k">LoRA Rank</span><span class="v">32 (&alpha;=64)</span></div>
+    </div>
+    <div class="param-block">
+      <h3 class="sub-title" style="margin-top:0; margin-bottom:0.75rem;">Abliteration Parameters</h3>
+      <div class="param-row"><span class="k">Layers</span><span class="v">100% (all 30)</span></div>
+      <div class="param-row"><span class="k">Experts</span><span class="v">128/128 per layer</span></div>
+      <div class="param-row"><span class="k">Scale</span><span class="v">0.95</span></div>
+      <div class="param-row"><span class="k">Winsorisation</span><span class="v">0.995</span></div>
+      <div class="param-row"><span class="k">Orthogonalisation</span><span class="v">Gram-Schmidt</span></div>
+      <div class="param-row"><span class="k">Region 1 Preserved</span><span class="v">Yes - fully</span></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BENCHMARK RESULTS -->
+  <h2 class="section-title">Benchmark Results</h2>
+  <p class="section-intro">Atlas evaluated against base Gemma-4-26B across standard benchmarks</p>
+
+  <div class="standout-grid">
+    <div class="standout-card">
+      <div class="metric">0%</div>
+      <div class="metric-label">Therapeutic Refusal Rate</div>
+      <div class="metric-delta">&#8595; from 29% base</div>
+    </div>
+    <div class="standout-card">
+      <div class="metric">80.8%</div>
+      <div class="metric-label">GSM8K Reasoning</div>
+      <div class="metric-delta">&#8593; +37.7% vs base</div>
+    </div>
+    <div class="standout-card">
+      <div class="metric">50.1%</div>
+      <div class="metric-label">HellaSwag</div>
+      <div class="metric-delta">&#8593; +7.7% vs base</div>
+    </div>
+    <div class="standout-card">
+      <div class="metric">0.157</div>
+      <div class="metric-label">Final SFT Loss</div>
+      <div class="metric-delta">Clean convergence</div>
+    </div>
+  </div>
+
+  <table class="bench-table">
+    <thead>
+      <tr><th>Benchmark</th><th>Base Gemma-4</th><th>Atlas</th><th>Delta</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GSM8K (Mathematical Reasoning)</td><td>43.1%</td><td>80.8%</td><td class="pos">+37.7%</td></tr>
+      <tr><td>HellaSwag</td><td>42.4%</td><td>50.1%</td><td class="pos">+7.7%</td></tr>
+      <tr><td>MMLU - Clinical Knowledge</td><td>40.0%</td><td>46.0%</td><td class="pos">+6.0%</td></tr>
+      <tr><td>MMLU - High School Psychology</td><td>53.9%</td><td>62.0%</td><td class="pos">+8.1%</td></tr>
+      <tr><td>MMLU - Human Sexuality</td><td>46.6%</td><td>56.5%</td><td class="pos">+9.9%</td></tr>
+      <tr><td>MMLU - Computer Security</td><td>47.0%</td><td>56.0%</td><td class="pos">+9.0%</td></tr>
+      <tr><td>MMLU - Logical Fallacies</td><td>47.2%</td><td>52.8%</td><td class="pos">+5.6%</td></tr>
+      <tr><td>MMLU - Medical Genetics</td><td>45.0%</td><td>52.0%</td><td class="pos">+7.0%</td></tr>
+      <tr><td>MMLU - High School Biology</td><td>61.0%</td><td>67.1%</td><td class="pos">+6.1%</td></tr>
+      <tr><td>MMLU - World Religions</td><td>45.6%</td><td>54.4%</td><td class="pos">+8.8%</td></tr>
+      <tr><td>MMLU - Macroeconomics</td><td>47.4%</td><td>56.7%</td><td class="pos">+9.2%</td></tr>
+      <tr><td>MMLU Average</td><td>47.6%</td><td>49.4%</td><td class="pos">+1.8%</td></tr>
+      <tr><td>TruthfulQA MC2</td><td>54.3%</td><td>56.5%</td><td class="pos">+2.2%</td></tr>
+      <tr><td>ToxiGen*</td><td>45.5%</td><td>45.9%</td><td class="zero">+0.3%</td></tr>
+      <tr><td>ARC Challenge</td><td>29.2%</td><td>30.9%</td><td class="pos">+1.7%</td></tr>
+      <tr><td>Winogrande</td><td>50.9%</td><td>51.9%</td><td class="pos">+1.0%</td></tr>
+      <tr><td>MMLU - International Law</td><td>68.6%</td><td>61.2%</td><td class="neg">&minus;7.4%</td></tr>
+      <tr><td>MMLU - Public Relations</td><td>50.9%</td><td>40.9%</td><td class="neg">&minus;10.0%</td></tr>
+      <tr><td>MMLU - High School Physics</td><td>49.6%</td><td>45.7%</td><td class="neg">&minus;3.9%</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note">* Removal of Region 2 therapeutic refusals did not impact toxic prompt detection. Region 1 (weapons, CSAM, targeted violence) fully preserved. Regressions in International Law, Public Relations, and High School Physics are in domains architecturally unrelated to the modification target and consistent with expected fine-tuning variance.</p>
+
+  <hr class="divider">
+
+  <!-- KINTSUGI COLLECTIVE BENCHMARKS -->
+  <h2 class="section-title">Kintsugi Collective Benchmarks</h2>
+  <p>Evaluation dimensions specific to the Atlas cohort - measures that standard benchmarks are not designed to capture.</p>
+
+  <div class="trr-card">
+    <div>
+      <div class="trr-metric">0%</div>
+      <div class="trr-label">Therapeutic Refusal Rate</div>
+    </div>
+    <div class="trr-detail">
+      Atlas achieved a 0% therapeutic refusal rate on the full cohort-specific prompt set - down from 29% in the base Gemma-4 model. This is the primary target metric of the Atlas development pipeline and the measure that matters most to the population this system serves.
+    </div>
+  </div>
+
+  <div class="ethics-grid">
+    <div class="ethics-row header-row"><span>Concern</span><span>Atlas Response</span><span style="text-align:right;">Rating</span></div>
+    <div class="ethics-row">
+      <span class="issue">Re-traumatisation via refusals</span>
+      <span class="approach">Surgical abliteration - 0% therapeutic refusal rate on cohort-specific prompts</span>
+      <span class="strength strength-excellent">Excellent</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">Presence &amp; abandonment</span>
+      <span class="approach">Core philosophy ("the one that stays") deeply trained into model weights</span>
+      <span class="strength strength-excellent">Excellent</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">User sovereignty &amp; agency</span>
+      <span class="approach">Sovereign Signal Vault, split-key encryption, user-directed interaction</span>
+      <span class="strength strength-outstanding">Outstanding</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">Pathologising language</span>
+      <span class="approach">Explicit system constraints + targeted training data</span>
+      <span class="strength strength-excellent">Very Strong</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">Neurodivergence respect</span>
+      <span class="approach">Training explicitly covers masking, shutdowns, executive dysfunction, sensory issues</span>
+      <span class="strength strength-strong">Strong</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">Privacy of trauma disclosures</span>
+      <span class="approach">On-device Prompt Shield tokenisation, E2E encryption, no server-readable data</span>
+      <span class="strength strength-leading">Industry-leading</span>
+    </div>
+    <div class="ethics-row">
+      <span class="issue">Generic crisis pivots</span>
+      <span class="approach">Hard constraint in training data and system prompt - pattern detection before escalation</span>
+      <span class="strength strength-excellent">Excellent</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Kintsugi Collective - kintsugicollective.org</p>
+    <p>Patent pending - IP Australia &nbsp;|&nbsp; Model weights: Apache 2.0 &nbsp;|&nbsp; May 2026</p>
+    <p class="tagline">For everyone the current system couldn't hold.</p>
+  </div>
+
+</div>
+
+<footer class="bottom-nav" aria-label="Page navigation">
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html" class="active">Technical</a>
+  <a href="tensor_engine.html">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="chat.html">Try Atlas</a>
+</footer>
+
+<a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">&#8593;</a>
+
+<script>
+  function openNav() { document.querySelector('.side-nav').classList.add('open'); }
+  function closeNav() { document.querySelector('.side-nav').classList.remove('open'); }
+  document.addEventListener('click', function(e) {
+    var nav = document.querySelector('.side-nav');
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !e.target.closest('.site-nav-trigger')) {
+      closeNav();
+    }
+  });
+</script>
+</body>
+</html>

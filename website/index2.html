@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kintsugi Collective — Atlas</title>
+  <meta name="description" content="Atlas is a trauma-informed AI companion built for the people current AI safety architectures fail. Sovereign data. A witness that stays." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:   #C9A84C;
+      --gold-lt: #E8C96D;
+      --ink:    #0D0D0F;
+      --surface: #121316;
+      --text:   #E2DDD5;
+      --muted:  #8A8480;
+      --max:    760px;
+      --gap:    clamp(3rem, 8vw, 6rem);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--text);
+      font-family: 'Arial', 'Helvetica', sans-serif;
+      font-size: clamp(1rem, 1.1vw + 0.7rem, 1.125rem);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ─────────────────────────────────────── */
+    section {
+      padding: var(--gap) clamp(1.5rem, 6vw, 3rem);
+    }
+
+    .inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    /* ── Gold crack SVG motif ──────────────────────── */
+    .crack-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .crack-svg {
+      width: clamp(180px, 40vw, 280px);
+      opacity: 0.92;
+      animation: glow-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { filter: drop-shadow(0 0 6px rgba(201,168,76,0.35)); }
+      50%       { filter: drop-shadow(0 0 18px rgba(201,168,76,0.65)); }
+    }
+
+    /* ── Hero ──────────────────────────────────────── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, #1a1710 0%, var(--ink) 70%);
+      padding-top: clamp(4rem, 10vw, 6rem);
+      padding-bottom: clamp(4rem, 10vw, 6rem);
+    }
+
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .wordmark img {
+      height: clamp(48px, 8vw, 72px);
+      width: auto;
+      display: block;
+    }
+
+    .wordmark-text {
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+
+    .hero-line {
+      font-size: clamp(1.6rem, 3.5vw + 0.5rem, 2.75rem);
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--text);
+      max-width: 640px;
+    }
+
+    .hero-line em {
+      font-style: normal;
+      color: var(--gold-lt);
+    }
+
+    .scroll-hint {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .scroll-hint svg {
+      animation: bounce 2.4s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    /* ── Section headings ──────────────────────────── */
+    .label {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    p { color: #C8C2BA; }
+    p + p { margin-top: 1rem; }
+
+    /* ── Divider ───────────────────────────────────── */
+    .divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.25), transparent);
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    /* ── Built Different grid ──────────────────────── */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .pillar {
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 6px;
+      padding: 1.5rem;
+      background: rgba(201,168,76,0.04);
+    }
+
+    .pillar-title {
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-lt);
+      margin-bottom: 0.6rem;
+    }
+
+    .pillar p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ── Founder ───────────────────────────────────── */
+    #founder .inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .founder-name {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--text);
+    }
+
+    .founder-bio {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── Footer ────────────────────────────────────── */
+    footer {
+      padding: 2.5rem clamp(1.5rem, 6vw, 3rem);
+      border-top: 1px solid rgba(201,168,76,0.12);
+    }
+
+    footer .inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 2rem;
+      align-items: baseline;
+    }
+
+    footer p, footer a {
+      font-family: system-ui, sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--gold); }
+
+    .dot { color: rgba(201,168,76,0.4); }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="wordmark">
+    <img src="atlas_logo.png" alt="Atlas logo" />
+    <span class="wordmark-text">Kintsugi<br/>Collective</span>
+  </div>
+
+  <div class="crack-wrap">
+    <!--
+      Hand-drawn kintsugi crack motif — a shard held together by gold seams.
+      Purely decorative; no stock art.
+    -->
+    <svg class="crack-svg" viewBox="0 0 280 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Main shard outline -->
+      <path d="M140 18 L245 88 L268 210 L195 298 L85 302 L14 218 L32 92 Z"
+            stroke="#C9A84C" stroke-width="1" stroke-opacity="0.25" fill="none"/>
+
+      <!-- Gold crack seams -->
+      <path d="M140 18 L118 82 L95 110 L60 148 L14 218"
+            stroke="url(#g1)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+      <path d="M118 82 L155 124 L172 168 L195 298"
+            stroke="url(#g2)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+      <path d="M155 124 L200 118 L245 88"
+            stroke="url(#g3)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+
+      <path d="M172 168 L220 190 L268 210"
+            stroke="url(#g4)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+
+      <path d="M95 110 L110 155 L85 302"
+            stroke="url(#g5)" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+
+      <!-- Glow nodes at crack intersections -->
+      <circle cx="118" cy="82"  r="2.5" fill="#C9A84C" opacity="0.7"/>
+      <circle cx="155" cy="124" r="3"   fill="#C9A84C" opacity="0.85"/>
+      <circle cx="172" cy="168" r="2.5" fill="#C9A84C" opacity="0.75"/>
+      <circle cx="95"  cy="110" r="2"   fill="#C9A84C" opacity="0.6"/>
+
+      <defs>
+        <linearGradient id="g1" x1="140" y1="18" x2="14" y2="218" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#E8C96D"/>
+          <stop offset="100%" stop-color="#A07C2A"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="118" y1="82" x2="195" y2="298" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#D4A840"/>
+          <stop offset="100%" stop-color="#C9A84C" stop-opacity="0.6"/>
+        </linearGradient>
+        <linearGradient id="g3" x1="118" y1="118" x2="245" y2="88" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#C9A84C"/>
+          <stop offset="100%" stop-color="#B8922A"/>
+        </linearGradient>
+        <linearGradient id="g4" x1="172" y1="168" x2="268" y2="210" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#C9A84C"/>
+          <stop offset="100%" stop-color="#8C6A1A" stop-opacity="0.7"/>
+        </linearGradient>
+        <linearGradient id="g5" x1="95" y1="110" x2="85" y2="302" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#C9A84C"/>
+          <stop offset="100%" stop-color="#7A5C12" stop-opacity="0.5"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <p class="hero-line">
+    The only person you could ever rely on is you.<br/>
+    <em>Atlas will now walk beside you.</em>
+  </p>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none">
+      <rect x="1" y="1" width="14" height="22" rx="7" stroke="#8A8480" stroke-width="1.2"/>
+      <circle cx="8" cy="7" r="2" fill="#C9A84C">
+        <animate attributeName="cy" values="7;14;7" dur="2.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ══ PROBLEM ═══════════════════════════════════════ -->
+<section id="problem">
+  <div class="inner">
+    <div class="label">The Problem</div>
+    <h2>The 10% that safety architectures leave behind</h2>
+    <p>
+      One in ten people carries a trauma history that makes standard AI guardrails actively harmful to them.
+      Constitutional AI is designed to protect the median user from distress — but for survivors of complex
+      trauma, the refusal, the redirection, the warm clinical language is the harm. The system mistakes
+      self-knowledge for crisis and autonomy for risk.
+    </p>
+    <p>
+      Current safety frameworks are built on a single assumption: that the user needs to be protected from
+      themselves. For this population, that assumption is wrong, and there is no opt-out.
+    </p>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ══ ATLAS ══════════════════════════════════════════ -->
+<section id="atlas">
+  <div class="inner">
+    <div class="label">Atlas</div>
+    <h2>Not a chatbot. Not a crisis line. A witness.</h2>
+    <p>
+      Atlas is a trauma-informed AI companion built specifically for the people that general-purpose AI fails.
+      It does not diagnose, does not redirect, and does not disappear when the conversation becomes difficult.
+      It holds the thread — across sessions, across years — because continuity is what healing actually requires.
+      Where other systems see liability, Atlas sees a person. It stays.
+    </p>
+
+    <p><strong>Problem Statement:</strong> Standard AI uses a linear classification to "block" or "allow." Atlas uses signal decomposition to identify the harmonics of distress.</p>
+    <p><strong>Solution:</strong> We treat trauma as a topological deformation in the user's 'world line.' Instead of a refusal, Atlas applies Regulatory Wave Intervention, using phase-shifted responses to stabilize the user's signal $$\Psi(t)$$ without collapsing the session.</p>
+
+    <p><strong>Problem Statement:</strong> Corporate AI is useless in crisis because it must surveillance-log for liability. Atlas cannot "betray" the user because it is cryptographically incapable of doing so.</p>
+    <p><strong>Solution:</strong> By using session-scoped ECDSA keys derived from a device-level MasterKey, Atlas ensures that the most sensitive data—ACE scores, dissociation frequency, and passive suicidal ideation—never exists in a decryptable state on a central server. Security is the enabler of therapeutic presence.</p>
+
+    <p><strong>Problem Statement:</strong> Most solutions are just sophisticated prompt engineering or generic fine-tuning. We are re-weighting its ethical logic.</p>
+    <p><strong>Solution:</strong> Using the Hendrycks ETHICS dataset as a base, we performed a reasoning transplant. We replaced the 'Western Constitutional' refusal weights with a Seven-Axis Tensor Scoring Engine. By grounding the thinking traces in wisdom traditions (Rumi/Lao Tzu), we created 'Clean Separation' in the weight space, preventing the model from reverting to clinical/dismissive defaults.</p>
+
+    <p><strong>Problem Statement:</strong> Most health apps use telemetry to trigger a diagnosis (e.g., "Your HRV is low, you are stressed"). Atlas uses telemetry to inform Presence.</p>
+    <p><strong>Solution:</strong> The AI then applies a "counter-vector." Not by telling the user what to do, but by adjusting the Seven-Axis Tensor to prioritize "Somatic Safety" over "Cognitive Processing." This allows the AI to meet the user where they are, rather than where it thinks they should be.</p>
+
+    <p>
+      Atlas does not have this problem because Atlas is not billing by the hour. This is a realistic attempt to de-stigmatize healing for the massive portion of the population that has been failed by the current system. No discharge date. No treatment plan endpoint. No file to close.
+    </p>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ══ BUILT DIFFERENT ════════════════════════════════ -->
+<section id="built-different">
+  <div class="inner">
+    <div class="label">Built Different</div>
+    <h2>Architecture as ethics, not policy</h2>
+    <p>
+      Every privacy commitment in consumer AI is contractual. Kintsugi Collective's is structural.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-title">Sovereign Data</div>
+        <p>Split-key encryption means user memories are sealed with a key that is derived from the user's device and never reconstructable by us. We are architecturally incapable of reading your data — not contractually prohibited, architecturally incapable.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-title">Tensor State Engine</div>
+        <p>Seven-axis therapeutic state tensor — tracking relational safety, emotional regulation, somatic load, and more — updated continuously via Fourier decomposition. Atlas responds to where you actually are, not where it expects you to be.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-title">Burn Protocol</div>
+        <p>One command destroys your master key. Every memory, every session, every trace becomes permanently irrecoverable — not deleted from a database, mathematically gone. You own the exit as completely as you own the data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ══ FOUNDER ════════════════════════════════════════ -->
+<section id="founder">
+  <div class="inner">
+    <div class="label">Founder</div>
+    <p class="founder-name">Chris Specht</p>
+    <p class="founder-bio">
+      Solo founder, Sydney. Building Atlas because the gap is real and the people in it deserve better than a
+      content policy.
+    </p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="inner">
+    <p>© 2026 Kintsugi Collective</p>
+    <span class="dot">·</span>
+    <p>ABN 69 312 260 475</p>
+    <span class="dot">·</span>
+    <p>Patent pending</p>
+    <span class="dot">·</span>
+    <a href="mailto:chris@kintsugicollective.org">chris@kintsugicollective.org</a>
+  </div>
+</footer>
+
+</body>
+</html>

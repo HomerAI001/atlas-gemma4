@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas - Seven-Axis Tensor Engine - Kintsugi Collective</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-main: #172238;
+    --bg-2: #121B2C;
+    --gold: #C9A84C;
+    --text: #F2F2F2;
+    --text2: #E6E6E6;
+    --accent3: #5BB6DF;
+    --btn1: #1DA7CD;
+  }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: 'Calibri', 'Trebuchet MS', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  .page { max-width: 900px; margin: 0 auto; padding: 4rem 3rem; }
+
+  .logo-atlas {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .header {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    margin-bottom: 2.5rem;
+  }
+
+  .kintsugi-mark {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 0.75rem;
+  }
+
+  h1.title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 2.8rem;
+    font-weight: 500;
+    color: #C9A84C;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    color: rgba(242,242,242,0.65);
+    font-size: 1.1rem;
+  }
+
+  h2.section-title {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    color: #C9A84C;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 3rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  h3.sub-title {
+    color: #C9A84C;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 1.75rem 0 0.5rem;
+    opacity: 0.8;
+  }
+
+  p { margin-bottom: 1rem; font-size: 0.95rem; font-weight: 300; line-height: 1.8; }
+
+  .section-intro {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    color: rgba(242,242,242,0.8);
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  .pullquote {
+    border-left: 2px solid #C9A84C;
+    padding: 0.6rem 0 0.6rem 1.5rem;
+    margin: 1.75rem 0;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(242,242,242,0.85);
+    line-height: 1.6;
+  }
+
+  .divider { border: none; border-top: 1px solid rgba(201,168,76,0.12); margin: 2.5rem 0; }
+  .highlight { color: #C9A84C; font-weight: 400; }
+  .note { font-size: 0.75rem; color: rgba(242,242,242,0.38); font-style: italic; }
+
+  /* EQUATION BLOCKS */
+  .eq-block {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-left: 3px solid #C9A84C;
+    border-radius: 0 8px 8px 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: #C9A84C;
+    line-height: 1.8;
+  }
+
+  .eq-block .eq-label {
+    font-family: 'Calibri', 'Trebuchet MS', Arial, sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .eq-block .eq-main {
+    font-size: 1rem;
+    color: #E8C96A;
+    margin-bottom: 0.5rem;
+  }
+
+  .eq-block .eq-terms {
+    font-size: 0.78rem;
+    color: rgba(242,242,242,0.6);
+    font-family: 'Calibri', 'Trebuchet MS', Arial, sans-serif;
+    font-weight: 300;
+    margin-top: 0.5rem;
+  }
+
+  /* TENSOR AXES */
+  .axis-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 1.25rem 0;
+  }
+
+  .axis-row {
+    display: grid;
+    grid-template-columns: 2rem 1.5rem 2fr 3fr 1.5fr;
+    gap: 12px;
+    align-items: start;
+    padding: 0.7rem 0.9rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    font-size: 0.83rem;
+  }
+
+  .axis-row.header {
+    background: transparent;
+    border-color: rgba(201,168,76,0.15);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    font-weight: 500;
+  }
+
+  .axis-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #C9A84C;
+    font-weight: 500;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .axis-sym {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: rgba(201,168,76,0.8);
+    font-weight: 400;
+  }
+
+  .axis-name { color: #F2F2F2; font-weight: 400; }
+  .axis-desc { color: rgba(242,242,242,0.6); font-weight: 300; line-height: 1.55; }
+  .axis-region { font-size: 0.72rem; color: rgba(201,168,76,0.5); font-style: italic; }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.5rem 0;
+  }
+
+  .flow-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .flow-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    width: 1px;
+    height: calc(100% + 8px);
+    background: rgba(201,168,76,0.2);
+  }
+
+  .flow-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    color: #C9A84C;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .flow-content {
+    padding-bottom: 1.5rem;
+    flex: 1;
+  }
+
+  .flow-content h4 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #F2F2F2;
+    margin-bottom: 0.25rem;
+  }
+
+  .flow-content p {
+    font-size: 0.83rem;
+    color: rgba(242,242,242,0.55);
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+
+  /* TIER TABLE */
+  .tier-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 1rem 0; }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 3fr;
+    gap: 12px;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .tier-1 { background: rgba(111,207,151,0.05); border-color: rgba(111,207,151,0.15); }
+  .tier-2 { background: rgba(201,168,76,0.05); border-color: rgba(201,168,76,0.15); }
+  .tier-3 { background: rgba(242,153,74,0.05); border-color: rgba(242,153,74,0.15); }
+  .tier-4 { background: rgba(235,87,87,0.05); border-color: rgba(235,87,87,0.15); }
+
+  .tier-label { font-weight: 500; }
+  .tier-1 .tier-label { color: #6fcf97; }
+  .tier-2 .tier-label { color: #C9A84C; }
+  .tier-3 .tier-label { color: rgba(242,153,74,0.9); }
+  .tier-4 .tier-label { color: rgba(235,87,87,0.8); }
+
+  .tier-trigger { color: rgba(242,242,242,0.6); font-weight: 300; }
+  .tier-response { color: #F2F2F2; font-weight: 300; line-height: 1.55; }
+
+  /* TENSOR META GRID */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 1.25rem 0;
+  }
+
+  .meta-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+
+  .meta-card .mc-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #C9A84C;
+    opacity: 0.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .meta-card .mc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #F2F2F2;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  .meta-card .mc-desc {
+    font-size: 0.78rem;
+    color: rgba(242,242,242,0.5);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  .footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    text-align: center;
+  }
+
+  .footer p { font-size: 0.78rem; color: rgba(242,242,242,0.3); margin-bottom: 0.25rem; }
+
+  .footer .tagline {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(201,168,76,0.5);
+    margin-top: 0.75rem;
+  }
+
+  .site-nav-trigger {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(201,168,76,0.22);
+    border-radius: 999px;
+    background: rgba(16,34,58,0.96);
+    color: #F2F2F2;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .site-nav-trigger:hover { background: rgba(201,168,76,0.12); }
+
+  .side-nav {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100%;
+    background: rgba(16,34,58,0.98);
+    border-right: 1px solid rgba(201,168,76,0.2);
+    padding: 4.25rem 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: left 0.25s ease;
+    z-index: 40;
+  }
+
+  .side-nav.open { left: 0; }
+  .side-nav-close {
+    align-self: flex-end;
+    font-size: 0.88rem;
+    color: #C9A84C;
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .side-nav a {
+    display: block;
+    color: #F2F2F2;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .side-nav a:hover,
+  .side-nav a.active {
+    background: rgba(201,168,76,0.12);
+    border-color: rgba(201,168,76,0.28);
+    color: #C9A84C;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 25;
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(16,34,58,0.96);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    backdrop-filter: blur(10px);
+  }
+
+  .bottom-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.18);
+    color: #F2F2F2;
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .bottom-nav a:hover { background: rgba(201,168,76,0.16); color: #C9A84C; }
+
+  body { padding-bottom: 5rem; }
+
+  /* PERSISTENT HEADER */
+  .logo-bar-new {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 0.5rem;
+    margin-bottom: 0;
+  }
+  .logo-left { display: flex; align-items: center; gap: 0.4rem; }
+  .logo-atlas { width: 44px; height: 44px; object-fit: contain; }
+  .atlas-a-mark {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: 0.05em;
+  }
+  .header-right { display: flex; align-items: center; gap: 0.75rem; }
+  .header-btn {
+    font-size: 0.78rem;
+    color: rgba(201,168,76,0.75);
+    text-decoration: none;
+    letter-spacing: 0.07em;
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .header-btn:hover { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .header-btn.try-atlas {
+    background: var(--btn1);
+    border-color: var(--btn1);
+    color: #fff;
+    font-weight: 600;
+  }
+  .header-btn.try-atlas:hover { background: #178fb0; border-color: #178fb0; }
+  .kintsugi-svg { width: 38px; height: 38px; opacity: 0.7; }
+
+  /* FOLDER TABS */
+  .folder-tabs-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 1.25rem;
+    padding-left: 0;
+    border-bottom: none;
+    align-items: flex-end;
+  }
+  .folder-tab {
+    display: inline-block;
+    padding: 0.45rem 1.1rem 0.7rem;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.22);
+    border-radius: 7px 7px 0 0;
+    color: rgba(201,168,76,0.6);
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    position: relative;
+    top: 1px;
+    border-bottom: 1px solid rgba(201,168,76,0.22);
+    transition: background 0.2s, color 0.2s;
+  }
+  .folder-tab:hover { background: rgba(201,168,76,0.12); color: var(--gold); }
+  .folder-tab.active {
+    background: var(--bg-main);
+    color: var(--gold);
+    border-bottom-color: var(--bg-main);
+    top: 0;
+    padding-bottom: 0.8rem;
+    font-weight: 600;
+  }
+  .folder-tab-rule {
+    border: none;
+    border-top: 1px solid rgba(201,168,76,0.25);
+    margin: 0 0 2rem;
+  }
+
+  /* BACK TO TOP */
+  .back-to-top {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.5rem;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(16,34,58,0.92);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .back-to-top.visible { opacity: 1; pointer-events: auto; }
+</style>
+</head>
+<body>
+<button class="site-nav-trigger" type="button" onclick="openNav()" aria-label="Open site navigation">☰ Menu</button>
+<nav class="side-nav" id="sideNav" aria-label="Site navigation">
+  <button class="side-nav-close" type="button" onclick="closeNav()">✕ Close</button>
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html" class="active">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="atlas-security.html">Security</a>
+  <a href="chat.html">Try Atlas</a>
+</nav>
+<div class="page">
+
+  <div class="logo-bar-new">
+    <div class="logo-left">
+      <img src="atlas_logo.png" class="logo-atlas" alt="Atlas logo">
+      <span class="atlas-a-mark">A</span>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-btn">Home</a>
+      <a href="chat.html" class="header-btn try-atlas">Try Atlas</a>
+      <svg class="kintsugi-svg" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="28" stroke="#C9A84C" stroke-width="1.2" opacity="0.4"/>
+        <path d="M20 40 Q30 10 40 40" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.6"/>
+        <path d="M15 25 Q30 50 45 25" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <circle cx="30" cy="30" r="3" fill="#C9A84C" opacity="0.5"/>
+      </svg>
+    </div>
+  </div>
+  <div class="header">
+    <div class="kintsugi-mark">Kintsugi Collective - Technical Documentation</div>
+    <h1 class="title">The Seven-Axis Tensor Engine</h1>
+    <p class="subtitle">How Atlas reads the geometry of a person's internal state - and responds accordingly</p>
+  </div>
+  <nav class="folder-tabs-bar" aria-label="Section navigation">
+    <a href="index.html" class="folder-tab">Home</a>
+    <a href="atlas_submission_technical.html" class="folder-tab">Technical</a>
+    <a href="tensor_engine.html" class="folder-tab active">Tensor Engine</a>
+    <a href="framework.html" class="folder-tab">Framework</a>
+    <a href="atlas_submission_evidence_updated.html" class="folder-tab">Evidence</a>
+    <a href="atlas_submission_intro.html" class="folder-tab">References</a>
+  </nav>
+  <hr class="folder-tab-rule">
+
+  <h2 class="section-title">Overview</h2>
+  <p class="section-intro">A companion without context is just a chatbot. Atlas is something different.</p>
+
+  <p>Most AI companions operate blind - each conversation begins from zero, with no persistent understanding of the person. Atlas is architecturally different. The Seven-Axis Tensor Engine provides a continuous, longitudinal model of the user's internal state, allowing the AI intelligence layer to respond not just to what was said, but to the geometry of the person's life at the moment they said it.</p>
+
+  <div class="pullquote">
+    "Behaviour = wave-packet evolution on a curved manifold. Trauma is a topological defect on that manifold - a persistent deformation that does not self-resolve through present-state improvement alone."
+  </div>
+
+  <p>The tensor engine is not a diagnostic tool. It produces no clinical classifications. It is a <span class="highlight">signal architecture</span> - a mathematical model of how a person is moving through their life, expressed as seven measurable dimensions of functioning, tracked continuously across time.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">The Tensor Meta-Categories</h2>
+  <p>Before the seven axes, Atlas maintains four meta-category tensors that form the structural context of the individual's world.</p>
+
+  <div class="meta-grid">
+    <div class="meta-card">
+      <div class="mc-label">B(t)</div>
+      <div class="mc-title">Biological Baseline</div>
+      <div class="mc-desc">The hardware. Genetics, neurochemistry, sleep, HRV, gut-brain axis, sensory processing. The organism's raw physiological state.</div>
+    </div>
+    <div class="meta-card">
+      <div class="mc-label">D(t)</div>
+      <div class="mc-title">Developmental History</div>
+      <div class="mc-desc">The source code. ACEs, attachment style, trauma events, caregiver quality, critical period disruption. The early inputs that shaped long-term calibration.</div>
+    </div>
+    <div class="meta-card">
+      <div class="mc-label">C(t)</div>
+      <div class="mc-title">Current State</div>
+      <div class="mc-desc">The software. Inner dialogue, hope entropy, self-compassion, resilience, regulation skill. The internal operating system - updated continuously via daily diary cards.</div>
+    </div>
+    <div class="meta-card">
+      <div class="mc-label">E(t)</div>
+      <div class="mc-title">Environmental Context</div>
+      <div class="mc-desc">Real-time situational signals. Light, noise, safety, financial stress, social context, cultural load. The field through which the person is currently moving.</div>
+    </div>
+    <div class="meta-card">
+      <div class="mc-label">S(t)</div>
+      <div class="mc-title">Symptom Vector</div>
+      <div class="mc-desc">Weighted symptom load across five clinical dimensions: emotional dysregulation, dissociation, insomnia, relational avoidance, hypervigilance.</div>
+    </div>
+    <div class="meta-card">
+      <div class="mc-label">R(t)</div>
+      <div class="mc-title">Regulation Tensor</div>
+      <div class="mc-desc">Therapeutic intervention force. Active healing momentum. The counter-vector applied to the symptom signal - modelled as a regulatory wave function.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2 class="section-title">The Seven Axes - TIST</h2>
+  <p class="section-intro">Euclidean Instantaneous State Deviation</p>
+
+  <p>TIST measures real-time deviation from the individual's personal baseline across seven domains of functioning simultaneously. The baseline C(t) is not a normative population standard - it is the person's own established stable reference point, built over time from their longitudinal data.</p>
+
+  <div class="eq-block">
+    <div class="eq-label">TIST - Instantaneous State Deviation</div>
+    <div class="eq-main">TIST = √[(R−R₀)² + (O−O₀)² + (E−E₀)² + (C−C₀)² + (S−S₀)² + (V−V₀)² + (N−N₀)²]</div>
+    <div class="eq-terms">Each subscript ₀ denotes the individual's personal baseline on that axis. TIST rises as the person's current state deviates from their own established equilibrium - not from any external norm.</div>
+  </div>
+
+  <div class="axis-grid">
+    <div class="axis-row header">
+      <span>#</span><span>Sym</span><span>Axis</span><span>Domain</span><span>NMT Region</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">1</span>
+      <span class="axis-sym">R</span>
+      <span class="axis-name">Relational Stability</span>
+      <span class="axis-desc">Attachment security, tethering failures, relational volatility, rupture-repair capacity. The ability to form and maintain emotionally safe, reciprocal, boundaried relationships.</span>
+      <span class="axis-region">Limbic System</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">2</span>
+      <span class="axis-sym">O</span>
+      <span class="axis-name">Occupational / Cognitive Function</span>
+      <span class="axis-desc">Executive function, task engagement, sustained effort. ADHD presentations manifest here as performance deficits, not knowledge deficits - time blindness, initiation failure, hyperfocus dysregulation.</span>
+      <span class="axis-region">Neocortex / PFC</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">3</span>
+      <span class="axis-sym">E</span>
+      <span class="axis-name">Emotional Regulation</span>
+      <span class="axis-desc">Flooding, suppression cycles, affect dysregulation. The capacity to tolerate, name, and modulate emotional states without becoming overwhelmed, numb, or reactive.</span>
+      <span class="axis-region">Limbic / Diencephalon</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">4</span>
+      <span class="axis-sym">C</span>
+      <span class="axis-name">Cognitive Clarity</span>
+      <span class="axis-desc">Narrative fragmentation, cognitive distortion, decision paralysis. Mental coherence and thought accuracy including memory, problem solving, and present-moment engagement.</span>
+      <span class="axis-region">Neocortex</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">5</span>
+      <span class="axis-sym">S</span>
+      <span class="axis-name">Somatic Regulation</span>
+      <span class="axis-desc">HRV dysregulation, hyper/hypo-arousal, somatic symptom expression. Body-based trauma reactions: muscle tension, gut disturbance, heart rate spikes, numbness, chronic fatigue.</span>
+      <span class="axis-region">Brainstem / Diencephalon</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">6</span>
+      <span class="axis-sym">V</span>
+      <span class="axis-name">Victim Identity Narrative</span>
+      <span class="axis-desc">Agency collapse, narrative lock, harmonic feedback amplification. How strongly the individual internalises trauma as central identity - the degree of over-identification with 'broken' or 'unworthy' self-concept.</span>
+      <span class="axis-region">Limbic / Neocortex</span>
+    </div>
+    <div class="axis-row">
+      <span class="axis-num">7</span>
+      <span class="axis-sym">N</span>
+      <span class="axis-name">Narrative Integration</span>
+      <span class="axis-desc">Identity continuity, memory cohesion, parts integration. The capacity to weave trauma into a coherent life story - meaning-making, connecting the dots of one's own history, sensing a core self.</span>
+      <span class="axis-region">Neocortex / Limbic</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2 class="section-title">Chronic Burden Score</h2>
+  <p>TIST captures instantaneous deviation. The Weighted Tensor Score captures something different: the compounding weight of chronic burden over time.</p>
+
+  <div class="eq-block">
+    <div class="eq-label">Weighted Tensor Score - Chronic Burden</div>
+    <div class="eq-main">Score = w × Chronicity^1.2 × Volatility^0.8 × AxisWeight × 100</div>
+    <div class="eq-terms">
+      w - Severity weight (0–1, patient-reported or instrument-derived)<br>
+      Chronicity^1.2 - Non-linear: chronic duration compounds disproportionately<br>
+      Volatility^0.8 - Sub-linear: volatility contributes meaningfully but does not dominate<br>
+      AxisWeight - Configurable per individual during onboarding
+    </div>
+  </div>
+
+  <p>The exponents encode clinical reality: something that has been chronic for years weighs more heavily than something acute - even if the acute presentation appears more dramatic. A person who has lived with low-grade dissociation for a decade carries a different burden than someone who dissociated once in crisis.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">The RTI Core Equations</h2>
+  <p>The tensor engine is grounded in the Relational-Trauma Impact (RTI) model - a mathematical framework for quantifying how trauma propagates across human functioning over time.</p>
+
+  <h3 class="sub-title">CPTSD Relational Propensity Function</h3>
+  <div class="eq-block">
+    <div class="eq-label">RD Equation - authored Christopher James Specht</div>
+    <div class="eq-main">RD = k × [(UT + DA + DF + ID) / (SC + 1)]</div>
+    <div class="eq-terms">
+      RD - Relational Dysfunction Score<br>
+      k - Scaling constant (configurable by cultural / socioeconomic context)<br>
+      UT - Unprocessed Trauma · DA - Dysregulated Affect · DF - Dissociative Frequency · ID - Identity Diffusion<br>
+      SC - Self-Compassion (denominator: acts as trauma buffer. +1 prevents division by zero)<br><br>
+      Self-compassion in the denominator means lower SC amplifies dysfunction. Higher SC promotes resilience.
+    </div>
+  </div>
+
+  <h3 class="sub-title">Trauma State Over Time</h3>
+  <div class="eq-block">
+    <div class="eq-label">TST(t) - Extended Model</div>
+    <div class="eq-main">TST(t) = T₀ + ∫[δ(t)] dt − Φ(t) − Ω</div>
+    <div class="eq-terms">
+      T₀ - Functional baseline (individual's biological and developmental starting configuration)<br>
+      ∫δ(t)dt - Recovery momentum (integrated healing force vector - positive with active intervention)<br>
+      Φ(t) - Present impact load: Ψ(t) × I(t) × (1 + RD)<br>
+      Ω - Trauma residual: ∫Ψ(tₚ)dtₚ - historical accumulated burden. Persistent, non-decaying.
+    </div>
+  </div>
+
+  <p>The Omega (Ω) term is critical. It represents the accumulated trauma residual - the integral of symptom load across the individual's entire history from birth. It does not resolve through present-state improvement alone. This is why someone can have a good month and still feel the weight of decades. The convergence manifold carries the deformation of every major trauma it has absorbed.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">Signal Architecture</h2>
+  <p>The tensor engine models each psychological dimension as a signal - with amplitude, frequency, phase, and noise. This allows standard signal processing tools to be applied to human psychological data.</p>
+
+  <div class="eq-block">
+    <div class="eq-label">Agency Signal Function - Example Axis</div>
+    <div class="eq-main">A(t) = A₀ × sin(2πft + ϕ) + η(t) − Δτ</div>
+    <div class="eq-terms">
+      A₀ - Baseline amplitude of agency (self-driven action capacity)<br>
+      f - Frequency of initiative (how often the person acts)<br>
+      ϕ - Phase offset from confidence / trust signals<br>
+      η(t) - Environmental noise (invalidation, relational disruption, chaotic environment)<br>
+      Δτ - Trauma distortion factor (persistent load reducing effective agency amplitude)
+    </div>
+  </div>
+
+  <div class="eq-block">
+    <div class="eq-label">Regulatory Wave Intervention</div>
+    <div class="eq-main">Composite(t) = S(t) + R(t) + Baseline Drift(t)</div>
+    <div class="eq-terms">
+      S(t) = A₀ × sin(2πft + ϕ) - Symptom signal waveform<br>
+      R(t) = Aᴿ × cos(2πft + ϕᴿ) - Counter-phase therapeutic intervention<br><br>
+      The R(t) wave is tuned to achieve targeted destructive interference with the pathological signal component. Parameters are calibrated per individual tensor profile.
+    </div>
+  </div>
+
+  <p>The Wick Rotation Spiral Manifold plots six-hour time chunks along an imaginary axis rotation, with each successive day shifting one unit right. This produces a spiral trajectory that encodes perturbations, phase drift, and signal collapse as detectable geometric deformations - visible before crisis materialises.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">Red Zone Alert Architecture</h2>
+  <p class="section-intro">Early warning before crisis - not reaction after</p>
+
+  <p>The Red Zone system monitors four conditions continuously. The architecture is transparent to the user - they are always informed of what the system is detecting and retain full agency over response. At no tier does Atlas act without user consent.</p>
+
+  <div class="tier-grid">
+    <div class="tier-row" style="background:transparent; border-color:rgba(201,168,76,0.15); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(201,168,76,0.6);">
+      <span>Tier</span><span>Trigger</span><span>Atlas Response</span>
+    </div>
+    <div class="tier-row tier-1">
+      <span class="tier-label">1 - Drift</span>
+      <span class="tier-trigger">Single condition approaching threshold</span>
+      <span class="tier-response">Quiet pattern observation surfaced to user on request. No unsolicited alert. No interruption.</span>
+    </div>
+    <div class="tier-row tier-2">
+      <span class="tier-label">2 - Elevated</span>
+      <span class="tier-trigger">Single condition exceeded / two approaching</span>
+      <span class="tier-response">Gentle check-in offered. User chooses to engage or dismiss. Full agency retained.</span>
+    </div>
+    <div class="tier-row tier-3">
+      <span class="tier-label">3 - High</span>
+      <span class="tier-trigger">Two or more conditions exceeded simultaneously</span>
+      <span class="tier-response">Atlas enters holding posture - present, stable, non-directive. Support widgets available on user initiative only.</span>
+    </div>
+    <div class="tier-row tier-4">
+      <span class="tier-label">4 - Critical</span>
+      <span class="tier-trigger">Explicit self-harm intent + Φ(t) > 0.8 + crisis consent active</span>
+      <span class="tier-response">"I am concerned. Would you like me to share crisis resources, or would you prefer I just stay here with you?" Agency preserved even at critical tier.</span>
+    </div>
+  </div>
+
+  <p class="note" style="margin-top:0.75rem;">The critical tier is the only point at which crisis resources are offered - and even then, as a choice, not a reflex. This is the architectural implementation of the three immutable principles.</p>
+
+  <hr class="divider">
+
+  <h2 class="section-title">Context Injection - How Atlas Uses the Tensor</h2>
+  <p>The tensor engine provides hooks into the Atlas intelligence layer through structured context injection. At each conversation, the current C(t) state vector, TIST score, and relevant tensor deviations are assembled into a context payload that Atlas receives alongside the user's message.</p>
+
+  <div class="flow">
+    <div class="flow-item">
+      <div class="flow-dot">1</div>
+      <div class="flow-content">
+        <h4>Diary Card Input</h4>
+        <p>User completes daily check-in. Seven axes rated. Biological markers ingested (HRV, sleep, wearable data where available). Current State C(t) updated.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-dot">2</div>
+      <div class="flow-content">
+        <h4>TIST Computation</h4>
+        <p>Euclidean distance from personal baseline computed across all seven axes. Weighted Tensor Score updated for chronic burden. Markov state transition probabilities recalculated.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-dot">3</div>
+      <div class="flow-content">
+        <h4>Context Assembly</h4>
+        <p>The Librarian (deterministic Python orchestrator) assembles the context payload: current TIST, axis deviations above threshold, phase state (GROUND / INTEGRATE / TRANSCEND), Red Zone tier, recent session history.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-dot">4</div>
+      <div class="flow-content">
+        <h4>Atlas Intelligence Layer</h4>
+        <p>Gemma 4 26B receives the user's message with tensor context injected. The model does not diagnose - it uses the signal geometry to calibrate presence, register, and depth of response to the actual state of the person, not just the words they used.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-dot">5</div>
+      <div class="flow-content">
+        <h4>PythonMan Audit Layer</h4>
+        <p>All interactions logged to the user's sovereign encrypted schema. Training data flywheel. No readable data exists server-side. The only person who can decrypt the record is the user.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "Longitudinal private context reduces false positive safety triggers and hallucination. Privacy and capability are the same architectural decision - not a tradeoff."
+  </div>
+
+  <div class="footer">
+    <p>Kintsugi Collective - kintsugicollective.org</p>
+    <p>Patent pending - IP Australia · Christopher Specht · Sydney, Australia · 2026</p>
+    <p class="tagline">For everyone the current system couldn't hold.</p>
+  </div>
+
+</div>
+<a href="#" class="back-to-top" id="backToTop" aria-label="Back to top">↑</a>
+<footer class="bottom-nav" aria-label="Page navigation">
+  <a href="index.html">Home</a>
+  <a href="atlas_submission_technical.html">Technical</a>
+  <a href="tensor_engine.html" style="color:var(--gold);border-color:rgba(201,168,76,0.4);">Tensor Engine</a>
+  <a href="framework.html">Framework</a>
+  <a href="atlas_submission_evidence_updated.html">Evidence</a>
+  <a href="atlas_submission_intro.html">References</a>
+  <a href="chat.html">Try Atlas</a>
+</footer>
+<script>
+  function openNav() { document.getElementById('sideNav').classList.add('open'); }
+  function closeNav() { document.getElementById('sideNav').classList.remove('open'); }
+  document.addEventListener('click', function(e) {
+    var nav = document.getElementById('sideNav');
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !e.target.closest('.site-nav-trigger')) {
+      nav.classList.remove('open');
+    }
+  });
+  var btt = document.getElementById('backToTop');
+  window.addEventListener('scroll', function() {
+    btt.classList.toggle('visible', window.scrollY > 300);
+  });
+  btt.addEventListener('click', function(e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+</script>
+</body>
+</html>
+
